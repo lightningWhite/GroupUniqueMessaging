@@ -13,5 +13,5 @@ public class MainActivity extends AppCompatActivity {
 
     // Even dumber
     // Something dumb
-    // this is Tayler
+    // this is even cooler
 }
