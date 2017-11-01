@@ -100,7 +100,7 @@ public class MsgParser implements Parser {
 
                 // Place each character of the variable into a string until end of block or end of
                 // string
-                while (msg.charAt(i) != '>' && i < msg.length()) {
+                while (msg.charAt(i) != '>' || msg.charAt(i) != '<' && i < msg.length()) {
                     variable += msg.charAt(i);
                     // Go to the next letter in the variable
                     i++;
