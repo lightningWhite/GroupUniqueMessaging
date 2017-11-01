@@ -29,7 +29,6 @@ public class MsgParserUnitTest {
         MsgParser parser1 = new MsgParser(msg2);
         variables = parser1.getVariableNames();
         assertEquals(variables.get(0), "name with you come to <place");
-        assertEquals(variables.get(1), "place");
 
 
 
