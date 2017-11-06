@@ -84,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
             contact.setPhoneNumber(number);
 
             contactList.add(contact);
-
         }
     }
 
