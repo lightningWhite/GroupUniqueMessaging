@@ -39,6 +39,13 @@ public class MainActivity extends AppCompatActivity {
     // contacts unique ID
     private String contactID;
 
+    /**
+     * Respond to the Load Template Button.
+     */
+    public void btnLoadTemplate (View view) {
+        Intent intent = new Intent(this, MessageTemplateActivity.class);
+        startActivity(intent);
+    }
 
     /**
      * Called when the activity is first created.
