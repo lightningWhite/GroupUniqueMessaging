@@ -29,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_PICK_CONTACTS = 1;
     private Uri uriContact;
 
+    List<Contact> contactList;
+
+
     // items nessecary to fill the contactList
     //List<Integer> numberList = new ArrayList<>();
     //ArrayAdapter<Integer> arrayAdapter;
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_CONTACTS},1);
 
+        contactList = new ArrayList<>();
         // arrayAdapter to put contact name into contactList
         //arrayAdapter = new ArrayAdapter<Integer>(this, R.layout.contact_list_item, numberList);
         //ListView listView = (ListView) findViewById(R.id.contactList);
@@ -72,12 +76,19 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "Response: " + data.toString());
             uriContact = data.getData();
 
-            retrieveContactName();
-            retrieveContactNumber();
+            String name = retrieveContactName();
+            String number = retrieveContactNumber();
+
+            Contact contact = new Contact();
+            contact.set_contact(name);
+            contact.setPhoneNumber(number);
+
+            contactList.add(contact);
+
         }
     }
 
-    private void retrieveContactNumber() {
+    private String retrieveContactNumber() {
 
         String contactNumber = null;
 
@@ -115,9 +126,11 @@ public class MainActivity extends AppCompatActivity {
         cursorPhone.close();
 
         Log.d(TAG, "Contact Phone Number: " + contactNumber);
+
+        return contactNumber;
     }
 
-    private void retrieveContactName() {
+    private String retrieveContactName() {
 
         String contactName = null;
 
@@ -140,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "Contact Name: " + contactName);
 
+        return contactName;
     }
 
 }
