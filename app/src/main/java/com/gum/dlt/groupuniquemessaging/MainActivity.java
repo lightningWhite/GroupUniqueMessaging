@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     // items nessecary to fill the contactList
     //List<Integer> numberList = new ArrayList<>();
-    //ArrayAdapter<Integer> arrayAdapter;
+    ArrayAdapter<String> arrayAdapter;
 
     // contacts unique ID
     private String contactID;
@@ -63,6 +63,10 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.activity_list_item);
+        ListView contactListView = (ListView) findViewById(R.id.contactList);
+        contactListView.setAdapter(arrayAdapter);
     }
 
     public void onClickSelectContact(View btnSelectContact) {
@@ -92,6 +96,9 @@ public class MainActivity extends AppCompatActivity {
 
             contactList.add(contact);
         }
+
+        ContactListViewTask addContact = new ContactListViewTask(arrayAdapter, contactList, MainActivity.this);
+        addContact.execute();
     }
 
     private String retrieveContactNumber() {
