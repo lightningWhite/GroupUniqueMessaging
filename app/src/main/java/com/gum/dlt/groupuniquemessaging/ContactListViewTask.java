@@ -7,7 +7,7 @@ import android.widget.ArrayAdapter;
 import java.util.List;
 
 /**
- * Created by tayle on 11/6/2017.
+ * Created by Tayler on 11/6/2017.
  */
 
 public class ContactListViewTask extends AsyncTask<Void, String, Void> {
@@ -51,5 +51,4 @@ public class ContactListViewTask extends AsyncTask<Void, String, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
     }
-
 }
