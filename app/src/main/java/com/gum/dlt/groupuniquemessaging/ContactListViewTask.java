@@ -2,7 +2,9 @@ package com.gum.dlt.groupuniquemessaging;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import java.util.List;
 
@@ -13,12 +15,12 @@ import java.util.List;
 public class ContactListViewTask extends AsyncTask<Void, String, Void> {
 
     ArrayAdapter<String> _arrayAdapter;
-    List<Contact> _contactList;
+    Contact _contact;
     Context _currentContext;
 
-    ContactListViewTask(ArrayAdapter<String> arrayAdapter, List<Contact> contactList, Context currentContext) {
+    ContactListViewTask(ArrayAdapter<String> arrayAdapter, Contact contact, Context currentContext) {
         _arrayAdapter = arrayAdapter;
-        _contactList = contactList;
+        _contact = contact;
         _currentContext = currentContext;
     }
 
@@ -28,13 +30,12 @@ public class ContactListViewTask extends AsyncTask<Void, String, Void> {
         super.onPreExecute();
     }
 
-    // This class acts on a seperate thread. It cannot access the GUI
+    // This class acts on a separate thread. It cannot access the GUI
     @Override
     protected Void doInBackground(Void... params) {
 
-        for (Contact contact: _contactList) {
-            publishProgress(contact.get_contact());
-        }
+        Log.d("ContactListViewTask", _contact.get_contact());
+        publishProgress(_contact.get_contact());
 
         return null;
     }
@@ -43,7 +44,8 @@ public class ContactListViewTask extends AsyncTask<Void, String, Void> {
     @Override
     protected void onProgressUpdate(String... values) {
         super.onProgressUpdate(values);
-        _arrayAdapter.add(values[0]);
+        Log.d("dslkjsdf;lkj", Integer.toString(values.length));
+        _arrayAdapter.addAll(values);
     }
 
     // This class runs on the main thread
@@ -51,5 +53,4 @@ public class ContactListViewTask extends AsyncTask<Void, String, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
     }
-
 }
