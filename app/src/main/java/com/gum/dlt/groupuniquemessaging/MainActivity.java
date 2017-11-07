@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         final ListView contactListView = (ListView) findViewById(R.id.contactListView);
         contactListView.setAdapter(arrayAdapter);
 
+        // Todo: We need to figure out how to select a contact and remove it from the list
 //
 //        contactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
