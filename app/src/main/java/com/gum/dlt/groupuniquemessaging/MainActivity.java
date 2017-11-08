@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -31,10 +32,9 @@ public class MainActivity extends AppCompatActivity {
 
     List<Contact> contactList;
 
-
     // items nessecary to fill the contactList
     //List<Integer> numberList = new ArrayList<>();
-    //ArrayAdapter<Integer> arrayAdapter;
+    ArrayAdapter<String> arrayAdapter;
 
     // contacts unique ID
     private String contactID;
@@ -63,6 +63,19 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_selectable_list_item);
+        final ListView contactListView = (ListView) findViewById(R.id.contactListView);
+        contactListView.setAdapter(arrayAdapter);
+
+        // Todo: We need to figure out how to select a contact and remove it from the list
+//
+//        contactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
+//                String selectedFromList =(String) (contactListView.getItemAtPosition(myItemInt));
+//                Log.d("MainActivity", selectedFromList);
+//            }
+//        });
     }
 
     public void onClickSelectContact(View btnSelectContact) {
@@ -71,13 +84,13 @@ public class MainActivity extends AppCompatActivity {
         // using native contacts selection
         // Intent.ACTION_PICK = Pick an item from the data, returning what was selected.
         startActivityForResult(new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI), REQUEST_CODE_PICK_CONTACTS);
-
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        Contact contact = new Contact();
 
         if (requestCode == REQUEST_CODE_PICK_CONTACTS && resultCode == RESULT_OK) {
             Log.d(TAG, "Response: " + data.toString());
@@ -86,12 +99,17 @@ public class MainActivity extends AppCompatActivity {
             String name = retrieveContactName();
             String number = retrieveContactNumber();
 
-            Contact contact = new Contact();
+            contact = new Contact();
             contact.set_contact(name);
             contact.setPhoneNumber(number);
 
             contactList.add(contact);
         }
+
+        Log.d("MainActivity", "About to allocate the ContactListViewTask");
+        ContactListViewTask addContact = new ContactListViewTask(arrayAdapter, contact, MainActivity.this);
+        Log.d("MainActivity", "About to execute the task");
+        addContact.execute();
     }
 
     private String retrieveContactNumber() {
@@ -151,8 +169,6 @@ public class MainActivity extends AppCompatActivity {
             contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
             //TextView textView = (TextView) findViewById(R.id.contactList);
             //textView.setText(contactName);
-
-
         }
 
         cursor.close();
@@ -161,5 +177,4 @@ public class MainActivity extends AppCompatActivity {
 
         return contactName;
     }
-
 }
