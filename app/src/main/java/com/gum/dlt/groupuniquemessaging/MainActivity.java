@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
 
     List<Contact> contactList;
 
-
     // items nessecary to fill the contactList
     //List<Integer> numberList = new ArrayList<>();
     ArrayAdapter<String> arrayAdapter;
@@ -141,9 +140,7 @@ public class MainActivity extends AppCompatActivity {
         // using native contacts selection
         // Intent.ACTION_PICK = Pick an item from the data, returning what was selected.
         startActivityForResult(new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI), REQUEST_CODE_PICK_CONTACTS);
-
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -228,8 +225,6 @@ public class MainActivity extends AppCompatActivity {
             contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
             //TextView textView = (TextView) findViewById(R.id.contactList);
             //textView.setText(contactName);
-
-
         }
 
         cursor.close();
@@ -238,5 +233,4 @@ public class MainActivity extends AppCompatActivity {
 
         return contactName;
     }
-
 }
