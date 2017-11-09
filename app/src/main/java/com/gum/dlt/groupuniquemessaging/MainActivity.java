@@ -1,12 +1,9 @@
 package com.gum.dlt.groupuniquemessaging;
 
 import android.Manifest;
-import android.content.ContentUris;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
@@ -14,21 +11,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.lang.reflect.Type;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,11 +28,11 @@ public class MainActivity extends AppCompatActivity {
     final String CONTACT_KEY = "contactKey";
     private Uri uriContact;
 
-    List<Contact> contactList;
+    List<Contact> _contactList;
 
-    // items nessecary to fill the contactList
+    // items nessecary to fill the _contactList
     //List<Integer> numberList = new ArrayList<>();
-    ArrayAdapter<String> arrayAdapter;
+    ArrayAdapter<String> contactArrayAdapter;
 
     // contacts unique ID
     private String contactID;
@@ -64,35 +54,36 @@ public class MainActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_CONTACTS},1);
 
 
-        // arrayAdapter to put contact name into contactList
-        //arrayAdapter = new ArrayAdapter<Integer>(this, R.layout.contact_list_item, numberList);
-        //ListView listView = (ListView) findViewById(R.id.contactList);
-        //listView.setAdapter(arrayAdapter);
+        // contactArrayAdapter to put contact name into _contactList
+        //contactArrayAdapter = new ArrayAdapter<Integer>(this, R.layout.contact_list_item, numberList);
+        //ListView listView = (ListView) findViewById(R.id._contactList);
+        //listView.setAdapter(contactArrayAdapter);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_selectable_list_item);
-        final ListView contactListView = (ListView) findViewById(R.id.contactListView);
-        contactListView.setAdapter(arrayAdapter);
 
         // Load the SharedPreferences file containing the contacts that were saved for activity switches
         SharedPreferences contactPref = this.getSharedPreferences(CONTACT_FILE, MODE_PRIVATE);
         Gson gson = new Gson();
 
         // Get the stored json list of contacts
-        contactList = gson.fromJson(contactPref.getString(CONTACT_KEY, null),
+        _contactList = gson.fromJson(contactPref.getString(CONTACT_KEY, null),
                 new TypeToken<ArrayList<Contact>>(){}.getType());
 
         // If there are no saved contacts in the shared preferences, allocate a new ArrayList
-        if (contactList == null) {
-            contactList = new ArrayList<>();
+        if (_contactList == null) {
+            _contactList = new ArrayList<>();
         }
 
+        // Create the array adapter so we can populate the contactListView
+        contactArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_selectable_list_item);
+        final ListView contactListView = (ListView) findViewById(R.id.contactListView);
+        contactListView.setAdapter(contactArrayAdapter);
+        
         // If there are contacts to load, populate the contact ListView with them
-        if (contactList != null) {
+        if (_contactList != null) {
             // Add the list of contacts to the contactListView in an AsyncTask for threading
-            ContactListViewTask addContact = new ContactListViewTask(arrayAdapter, contactList,
+            ContactListViewTask addContact = new ContactListViewTask(contactArrayAdapter, _contactList,
                     MainActivity.this);
             addContact.execute();
         }
@@ -117,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         Gson gson = new Gson();
 
         // Convert the contacts list into a json string
-        String json = gson.toJson(contactList);
+        String json = gson.toJson(_contactList);
         Log.d("MainActivity", json);
 
         prefsEditor.putString(CONTACT_KEY, json);
@@ -161,13 +152,13 @@ public class MainActivity extends AppCompatActivity {
             contact.set_contact(name);
             contact.setPhoneNumber(number);
 
-            contactList.add(contact);
+            _contactList.add(contact);
         }
 
 
 
         // Add the contact to the ListView
-        arrayAdapter.add(contact.get_contact());
+        contactArrayAdapter.add(contact.get_contact());
     }
 
     private String retrieveContactNumber() {
@@ -223,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
             // HAS_PHONE_NUMBER =   An indicator of whether this contact has at least one phone number.
 
             contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-            //TextView textView = (TextView) findViewById(R.id.contactList);
+            //TextView textView = (TextView) findViewById(R.id._contactList);
             //textView.setText(contactName);
         }
 
@@ -235,10 +226,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onRemoveContact(View btnSelectContact) {
-        if (!contactList.isEmpty()) {
+        if (!_contactList.isEmpty()) {
             //final ListView contactListView = (ListView) findViewById(R.id.contactListView);
-            contactList.remove(contactList.size() - 1);
-            arrayAdapter.notifyDataSetChanged();
+            _contactList.remove(_contactList.size() - 1);
+            contactArrayAdapter.notifyDataSetChanged();
         }
     }
 }
