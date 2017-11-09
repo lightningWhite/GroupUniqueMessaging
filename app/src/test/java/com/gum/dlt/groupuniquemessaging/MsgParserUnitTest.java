@@ -2,6 +2,7 @@ package com.gum.dlt.groupuniquemessaging;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -12,11 +13,6 @@ import static org.junit.Assert.*;
  */
 
 public class MsgParserUnitTest {
-
-    @Test
-    public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
-    }
 
     @Test
     public void test_getVar_names() throws Exception{
@@ -46,6 +42,43 @@ public class MsgParserUnitTest {
         variables = parser3.getVariableNames();
         assertEquals(variables.get(0), "name");
         assertEquals(variables.get(1), "place");
+    }
+
+    @Test
+    public void test_insertUserSetVariables() throws Exception {
+        String name = "Bill";
+        String place = "church";
+        List<String> userVars = new ArrayList<>();
+        userVars.add(name);
+        userVars.add(place);
+
+        // Normal case
+        String msg1 = "Hello <name> will you come to <place>?";
+        MsgParser parser = new MsgParser(msg1);
+        String result = parser.insertUserSetVariables(userVars);
+        String exp1 = "Hello Bill will you come to church?";
+        assertEquals(exp1, result);
+
+        // First variable missing closing bracket
+        String msg2 = "Hello <name will you come to <place>?";
+        MsgParser parser2 = new MsgParser(msg2);
+        String result2 = parser2.insertUserSetVariables(userVars);
+        String exp2 = "Hello Bill?";
+        assertEquals(exp2, result2);
+
+        // First variable missing closing bracket at end of string
+        String msg3 = "Hello <name> will you come to <place";
+        MsgParser parser3 = new MsgParser(msg3);
+        String result3 = parser3.insertUserSetVariables(userVars);
+        String exp3 = "Hello Bill will you come to church";
+        assertEquals(exp3, result3);
+
+        // First variable missing opening bracket
+        String msg4 = "Hello name> will you come to <place>?";
+        MsgParser parser4 = new MsgParser(msg4);
+        String result4 = parser4.insertUserSetVariables(userVars);
+        String exp4 = "Hello name> will you come to Bill?"; // The user should notice his error
+        assertEquals(exp4, result4);
     }
 }
 
