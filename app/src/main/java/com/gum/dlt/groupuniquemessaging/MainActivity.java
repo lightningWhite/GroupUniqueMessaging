@@ -3,6 +3,7 @@ package com.gum.dlt.groupuniquemessaging;
 import android.Manifest;
 import android.content.ContentUris;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,15 +20,21 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.reflect.Type;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_CODE_PICK_CONTACTS = 1;
+    final String CONTACT_FILE = "savedContacts";
+    final String CONTACT_KEY = "contactKey";
     private Uri uriContact;
 
     List<Contact> contactList;
@@ -56,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_CONTACTS},1);
 
-        contactList = new ArrayList<>();
+
         // arrayAdapter to put contact name into contactList
         //arrayAdapter = new ArrayAdapter<Integer>(this, R.layout.contact_list_item, numberList);
         //ListView listView = (ListView) findViewById(R.id.contactList);
@@ -69,6 +76,26 @@ public class MainActivity extends AppCompatActivity {
         final ListView contactListView = (ListView) findViewById(R.id.contactListView);
         contactListView.setAdapter(arrayAdapter);
 
+        SharedPreferences contactPref = this.getSharedPreferences(CONTACT_FILE, MODE_PRIVATE);
+        Gson gson = new Gson();
+        contactList = gson.fromJson(contactPref.getString(CONTACT_KEY, null), new TypeToken<ArrayList<Contact>>(){}.getType());
+
+        // If there are no saved contacts in the shared preferences, allocate a new ArrayList
+        if (contactList == null) {
+            contactList = new ArrayList<>();
+        }
+
+        Log.d("MainACtivity", "HI");
+        if (contactList != null) {
+
+            if (contactPref == null)
+                Log.d("MainActivity", "It's very null!!!!!!!!11");
+
+            for (int i = 0; i < contactList.size(); i++) {
+                arrayAdapter.add(contactList.get(i)._contact);
+            }
+        }
+
         // Todo: We need to figure out how to select a contact and remove it from the list
 //
 //        contactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -78,6 +105,35 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
     }
+
+    @Override
+    public void onPause() {
+
+        super.onPause();  // Always call the superclass method first
+        SharedPreferences mPrefs = getSharedPreferences(CONTACT_FILE, MODE_PRIVATE);
+
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        Gson gson = new Gson();
+
+        String json = gson.toJson(contactList);
+        Log.d("MainActivity", json);
+
+        prefsEditor.putString(CONTACT_KEY, json);
+
+        prefsEditor.commit();
+    }
+
+    // TODO: This apparently gets called even when switching between activities.
+    // TODO: We need to clear the shared preferences or else the app will always load with the previous contacts.
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        SharedPreferences mPrefs = getSharedPreferences(CONTACT_FILE, MODE_PRIVATE);
+//        SharedPreferences.Editor pEditor = mPrefs.edit();
+//        pEditor.clear();
+//        pEditor.commit();
+//
+//    }
 
     public void onClickSelectContact(View btnSelectContact) {
 
