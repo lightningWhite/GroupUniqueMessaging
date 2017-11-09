@@ -75,16 +75,20 @@ public class MainActivity extends AppCompatActivity {
         final ListView contactListView = (ListView) findViewById(R.id.contactListView);
         contactListView.setAdapter(arrayAdapter);
 
+        // Load the SharedPreferences file containing the contacts that were saved for activity switches
         SharedPreferences contactPref = this.getSharedPreferences(CONTACT_FILE, MODE_PRIVATE);
         Gson gson = new Gson();
-        contactList = gson.fromJson(contactPref.getString(CONTACT_KEY, null), new TypeToken<ArrayList<Contact>>(){}.getType());
+
+        // Get the stored json list of contacts
+        contactList = gson.fromJson(contactPref.getString(CONTACT_KEY, null),
+                new TypeToken<ArrayList<Contact>>(){}.getType());
 
         // If there are no saved contacts in the shared preferences, allocate a new ArrayList
         if (contactList == null) {
             contactList = new ArrayList<>();
         }
 
-        Log.d("MainACtivity", "HI");
+        // If there are contacts to load, populate the contact ListView with them
         if (contactList != null) {
 
             if (contactPref == null)
@@ -114,11 +118,11 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
         Gson gson = new Gson();
 
+        // Convert the contacts list into a json string
         String json = gson.toJson(contactList);
         Log.d("MainActivity", json);
 
         prefsEditor.putString(CONTACT_KEY, json);
-
         prefsEditor.commit();
     }
 
@@ -199,8 +203,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (cursorPhone.moveToFirst()) {
             contactNumber = cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            //TextView textView = (TextView) findViewById(R.id.textView4);
-            //textView.setText(contactNumber);
         }
 
         cursorPhone.close();
