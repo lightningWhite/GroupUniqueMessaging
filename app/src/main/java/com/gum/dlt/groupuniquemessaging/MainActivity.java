@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -231,5 +232,13 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "Contact Name: " + contactName);
 
         return contactName;
+    }
+
+    public void onRemoveContact(View btnSelectContact) {
+        if (!contactList.isEmpty()) {
+            //final ListView contactListView = (ListView) findViewById(R.id.contactListView);
+            contactList.remove(contactList.size() - 1);
+            arrayAdapter.notifyDataSetChanged();
+        }
     }
 }
