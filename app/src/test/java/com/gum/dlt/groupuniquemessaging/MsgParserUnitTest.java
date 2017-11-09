@@ -14,8 +14,13 @@ import static org.junit.Assert.*;
 
 public class MsgParserUnitTest {
 
+    /**
+     * This test verifies that the getVariableNames method can successfully pull the names of each
+     * variable block from the template message and return them in a List. 
+     * @throws Exception
+     */
     @Test
-    public void test_getVar_names() throws Exception{
+    public void test_getVariableNames() throws Exception{
 
         // Normal case
         String msg1 = "Hello <name> will you come to <place>?";
@@ -44,6 +49,12 @@ public class MsgParserUnitTest {
         assertEquals(variables.get(1), "place");
     }
 
+    /**
+     * This test verifies that when insertUserSetVariables receives a list of variables, it
+     * can successfully insert them into the established variable blocks found in the
+     * template message.
+     * @throws Exception
+     */
     @Test
     public void test_insertUserSetVariables() throws Exception {
         String name = "Bill";
