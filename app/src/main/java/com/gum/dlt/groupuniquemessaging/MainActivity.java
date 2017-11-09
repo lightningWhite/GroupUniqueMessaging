@@ -28,11 +28,11 @@ public class MainActivity extends AppCompatActivity {
     final String CONTACT_KEY = "contactKey";
     private Uri uriContact;
 
-    List<Contact> _contactList;
+    ArrayList<Contact> _contactList;
 
     // items nessecary to fill the _contactList
     //List<Integer> numberList = new ArrayList<>();
-    ArrayAdapter<String> contactArrayAdapter;
+    ContactsAdapter contactArrayAdapter;
 
     // contacts unique ID
     private String contactID;
@@ -76,10 +76,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Create the array adapter so we can populate the contactListView
-        contactArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_selectable_list_item);
+        contactArrayAdapter = new ContactsAdapter(this, android.R.layout.simple_selectable_list_item, _contactList);
         final ListView contactListView = (ListView) findViewById(R.id.contactListView);
         contactListView.setAdapter(contactArrayAdapter);
-        
+
         // If there are contacts to load, populate the contact ListView with them
         if (_contactList != null) {
             // Add the list of contacts to the contactListView in an AsyncTask for threading
@@ -151,14 +151,10 @@ public class MainActivity extends AppCompatActivity {
             contact = new Contact();
             contact.set_contact(name);
             contact.setPhoneNumber(number);
-
-            _contactList.add(contact);
         }
 
-
-
         // Add the contact to the ListView
-        contactArrayAdapter.add(contact.get_contact());
+        contactArrayAdapter.add(contact);
     }
 
     private String retrieveContactNumber() {
