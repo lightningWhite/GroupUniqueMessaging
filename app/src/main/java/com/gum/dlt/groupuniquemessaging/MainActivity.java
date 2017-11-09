@@ -90,13 +90,10 @@ public class MainActivity extends AppCompatActivity {
 
         // If there are contacts to load, populate the contact ListView with them
         if (contactList != null) {
-
-            if (contactPref == null)
-                Log.d("MainActivity", "It's very null!!!!!!!!11");
-
-            for (int i = 0; i < contactList.size(); i++) {
-                arrayAdapter.add(contactList.get(i)._contact);
-            }
+            // Add the list of contacts to the contactListView in an AsyncTask for threading
+            ContactListViewTask addContact = new ContactListViewTask(arrayAdapter, contactList,
+                    MainActivity.this);
+            addContact.execute();
         }
 
         // Todo: We need to figure out how to select a contact and remove it from the list
@@ -166,10 +163,10 @@ public class MainActivity extends AppCompatActivity {
             contactList.add(contact);
         }
 
-        Log.d("MainActivity", "About to allocate the ContactListViewTask");
-        ContactListViewTask addContact = new ContactListViewTask(arrayAdapter, contact, MainActivity.this);
-        Log.d("MainActivity", "About to execute the task");
-        addContact.execute();
+
+
+        // Add the contact to the ListView
+        arrayAdapter.add(contact.get_contact());
     }
 
     private String retrieveContactNumber() {
