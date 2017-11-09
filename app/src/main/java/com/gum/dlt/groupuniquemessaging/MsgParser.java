@@ -8,7 +8,7 @@ import java.util.List;
  * This class provides functionality to pull variable blocks from a message as well as insert
  * variables in the place of variable blocks.
  */
-public class MsgParser implements Parser {
+public class MsgParser {
 
     String _message;
     List<String> _variables;
@@ -59,7 +59,7 @@ public class MsgParser implements Parser {
             if (c == '<') {
                 int startPos = i;
                 // Delete the variable block
-                while (stringBuilder.charAt(i) != '>' && i < stringBuilder.length()) {
+                while (i < stringBuilder.length() && stringBuilder.charAt(i) != '>') {
                     stringBuilder.deleteCharAt(i);
 
                     // Go to the next letter in the variable block
@@ -85,8 +85,7 @@ public class MsgParser implements Parser {
      * by <> brackets, and adds the name of the variable block to the _variables List.
      * @param msg
      */
-    @Override
-    public void parse(String msg) {
+    public List<String> parse(String msg) {
         String variable = "";
 
         // Loop through each character in the message looking for variable blocks
@@ -100,7 +99,7 @@ public class MsgParser implements Parser {
 
                 // Place each character of the variable into a string until end of block or end of
                 // string
-                while (msg.charAt(i) != '>' && i < msg.length()) {
+                while (i < msg.length() && msg.charAt(i) != '>') {
                     variable += msg.charAt(i);
                     // Go to the next letter in the variable
                     i++;
@@ -110,5 +109,6 @@ public class MsgParser implements Parser {
                 variable = "";
             }
         }
+        return _variables;
     }
 }
