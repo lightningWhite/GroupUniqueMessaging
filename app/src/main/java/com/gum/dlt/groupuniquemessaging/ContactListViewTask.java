@@ -9,18 +9,17 @@ import android.widget.ListView;
 import java.util.List;
 
 /**
- * Created by tayle on 11/6/2017.
+ * This class provides a threaded process to add a list of contacts to the contact ListView
  */
-
 public class ContactListViewTask extends AsyncTask<Void, String, Void> {
 
     ArrayAdapter<String> _arrayAdapter;
-    Contact _contact;
+    List<Contact> _contacts;
     Context _currentContext;
 
-    ContactListViewTask(ArrayAdapter<String> arrayAdapter, Contact contact, Context currentContext) {
+    ContactListViewTask(ArrayAdapter<String> arrayAdapter, List<Contact> contacts, Context currentContext) {
         _arrayAdapter = arrayAdapter;
-        _contact = contact;
+        _contacts = contacts;
         _currentContext = currentContext;
     }
 
@@ -34,8 +33,10 @@ public class ContactListViewTask extends AsyncTask<Void, String, Void> {
     @Override
     protected Void doInBackground(Void... params) {
 
-        Log.d("ContactListViewTask", _contact.get_contact());
-        publishProgress(_contact.get_contact());
+        // Traverse throught the list of contacts and publish them
+        for (Contact contact: _contacts) {
+            publishProgress(contact.get_contact());
+        }
 
         return null;
     }
@@ -44,8 +45,8 @@ public class ContactListViewTask extends AsyncTask<Void, String, Void> {
     @Override
     protected void onProgressUpdate(String... values) {
         super.onProgressUpdate(values);
-        Log.d("dslkjsdf;lkj", Integer.toString(values.length));
-        _arrayAdapter.addAll(values);
+        // Add each contact to the ListView
+        _arrayAdapter.add(values[0]);
     }
 
     // This class runs on the main thread

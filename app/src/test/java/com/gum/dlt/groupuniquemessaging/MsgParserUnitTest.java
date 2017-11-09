@@ -16,7 +16,7 @@ public class MsgParserUnitTest {
 
     /**
      * This test verifies that the getVariableNames method can successfully pull the names of each
-     * variable block from the template message and return them in a List. 
+     * variable block from the template message and return them in a List.
      * @throws Exception
      */
     @Test
