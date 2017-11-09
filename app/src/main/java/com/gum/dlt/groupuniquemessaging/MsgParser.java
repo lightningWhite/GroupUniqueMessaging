@@ -45,7 +45,7 @@ public class MsgParser {
      * sets the _msgWithSetVariables to the new message.
      * @param vars
      */
-    private String insertUserSetVariables(List<String> vars) {
+    public String insertUserSetVariables(List<String> vars) {
 
         StringBuilder stringBuilder = new StringBuilder(_message);
         String variable = "";
@@ -61,9 +61,6 @@ public class MsgParser {
                 // Delete the variable block
                 while (i < stringBuilder.length() && stringBuilder.charAt(i) != '>') {
                     stringBuilder.deleteCharAt(i);
-
-                    // Go to the next letter in the variable block
-                    i++;
                 }
 
                 // Delete the closing angle bracket
@@ -73,6 +70,7 @@ public class MsgParser {
 
                 // Insert the user-set variable
                 stringBuilder.insert(startPos, vars.get(varIndex));
+                varIndex++;
             }
         }
 
