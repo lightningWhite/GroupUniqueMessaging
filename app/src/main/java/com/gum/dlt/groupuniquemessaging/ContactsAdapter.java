@@ -12,6 +12,12 @@ import java.util.ArrayList;
 
 /**
  * Created by Daniel on 11/9/2017.
+ * This class provides a custom ArrayAdapter for a List of Contacts. This enables us to
+ * bind the list in the MainActivity to this adapter so the GUI list will always reflect
+ * what is actually in the list.
+ *
+ * This code was patterned after the example found at this URL:
+ * https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
  */
 
 public class ContactsAdapter extends ArrayAdapter<Contact> {
