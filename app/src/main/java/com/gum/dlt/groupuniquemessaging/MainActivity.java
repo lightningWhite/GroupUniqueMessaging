@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -34,10 +35,10 @@ public class MainActivity extends AppCompatActivity {
     final String CONTACT_KEY = "contactKey";
     private Uri uriContact;
 
+    // All contacts are stored in this list
     ArrayList<Contact> _contactList;
 
-    // items nessecary to fill the _contactList
-    //List<Integer> numberList = new ArrayList<>();
+    // An adapter to interact between the _contactList and the contactListVeiw.
     ContactsAdapter contactArrayAdapter;
 
     // contacts unique ID
@@ -59,12 +60,6 @@ public class MainActivity extends AppCompatActivity {
 
         ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_CONTACTS},1);
 
-
-        // contactArrayAdapter to put contact name into _contactList
-        //contactArrayAdapter = new ArrayAdapter<Integer>(this, R.layout.contact_list_item, numberList);
-        //ListView listView = (ListView) findViewById(R.id._contactList);
-        //listView.setAdapter(contactArrayAdapter);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -72,9 +67,10 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences contactPref = this.getSharedPreferences(CONTACT_FILE, MODE_PRIVATE);
         Gson gson = new Gson();
 
-        // Get the stored json list of contacts
+        // Get the stored json list of contacts. Note: This line prevents it from populating the list in the ContactListViewTask
         _contactList = gson.fromJson(contactPref.getString(CONTACT_KEY, null),
-                new TypeToken<ArrayList<Contact>>(){}.getType());
+                new TypeToken<ArrayList<Contact>>() {
+                }.getType());
 
         // If there are no saved contacts in the shared preferences, allocate a new ArrayList
         if (_contactList == null) {
@@ -86,24 +82,19 @@ public class MainActivity extends AppCompatActivity {
         final ListView contactListView = (ListView) findViewById(R.id.contactListView);
         contactListView.setAdapter(contactArrayAdapter);
 
-        // If there are contacts to load, populate the contact ListView with them
-        if (_contactList != null) {
+        // If there are contacts to load, populate the contact ListView with them (I don't think it ever goes here because of when we get the json)
+        if (_contactList != null && _contactList.isEmpty()) {
             // Add the list of contacts to the contactListView in an AsyncTask for threading
             ContactListViewTask addContact = new ContactListViewTask(contactArrayAdapter, _contactList,
                     MainActivity.this);
             addContact.execute();
         }
-
-        // Todo: We need to figure out how to select a contact and remove it from the list
-//
-//        contactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
-//                String selectedFromList =(String) (contactListView.getItemAtPosition(myItemInt));
-//                Log.d("MainActivity", selectedFromList);
-//            }
-//        });
     }
 
+    /**
+     * This method saves all of the contacts so they can be preserved when changing
+     * between activities.
+     */
     @Override
     public void onPause() {
 
@@ -133,14 +124,25 @@ public class MainActivity extends AppCompatActivity {
 //
 //    }
 
+    /**
+     * This method starts an activity that gives the user access to the phone's stored contacts
+     * so the user can select a contact to add to the list.
+     * @param btnSelectContact
+     */
     public void onClickSelectContact(View btnSelectContact) {
 
         Log.d("onClickSelectContact()", "setup");
         // using native contacts selection
-        // Intent.ACTION_PICK = Pick an item from the data, returning what was selected.
         startActivityForResult(new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI), REQUEST_CODE_PICK_CONTACTS);
     }
 
+    /**
+     * This method obtains the user-selected contact's name and phone number and adds it to the
+     * contactListView.
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -163,6 +165,10 @@ public class MainActivity extends AppCompatActivity {
         contactArrayAdapter.add(contact);
     }
 
+    /**
+     * This method obtains the phone number of the selected contact.
+     * @return the contact's phone number
+     */
     private String retrieveContactNumber() {
 
         String contactNumber = null;
@@ -203,6 +209,10 @@ public class MainActivity extends AppCompatActivity {
         return contactNumber;
     }
 
+    /**
+     * This method obtains the contact name from the selected contact.
+     * @return the contact name
+     */
     private String retrieveContactName() {
 
         String contactName = null;
@@ -211,13 +221,9 @@ public class MainActivity extends AppCompatActivity {
         Cursor cursor = getContentResolver().query(uriContact, null, null, null, null);
 
         if (cursor.moveToFirst()) {
-
             // DISPLAY_NAME = The display name for the contact.
             // HAS_PHONE_NUMBER =   An indicator of whether this contact has at least one phone number.
-
             contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-            //TextView textView = (TextView) findViewById(R.id._contactList);
-            //textView.setText(contactName);
         }
 
         cursor.close();
@@ -227,10 +233,14 @@ public class MainActivity extends AppCompatActivity {
         return contactName;
     }
 
+    /**
+     * This method makes it so the user can select a contact in the contactListView and remove it.
+     * @param btnSelectContact
+     */
     public void onRemoveContact(View btnSelectContact) {
         if (!_contactList.isEmpty()) {
-            //final ListView contactListView = (ListView) findViewById(R.id.contactListView);
-            _contactList.remove(_contactList.size() - 1);
+            int pos = contactArrayAdapter.getSelectedItem();
+            _contactList.remove(_contactList.remove(pos));
             contactArrayAdapter.notifyDataSetChanged();
         }
     }

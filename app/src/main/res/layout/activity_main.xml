@@ -25,30 +25,27 @@
 
     <Button
         android:id="@+id/loadButton"
-        android:layout_width="170dp"
+        android:layout_width="140dp"
         android:layout_height="47dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:onClick="btnLoadTemplate"
         android:text="Load Template"
-        app:layout_constraintEnd_toStartOf="@+id/saveButton"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/generateVaribalesButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editMessage" />
 
     <Button
         android:id="@+id/saveButton"
-        android:layout_width="170dp"
+        android:layout_width="96dp"
         android:layout_height="47dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="Save"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/loadButton"
+        app:layout_constraintStart_toEndOf="@+id/generateVaribalesButton"
         app:layout_constraintTop_toBottomOf="@+id/editMessage" />
 
     <ListView
@@ -75,6 +72,8 @@
         android:layout_marginRight="16dp"
         android:layout_marginStart="4dp"
         android:background="@android:drawable/dialog_holo_light_frame"
+        android:choiceMode="singleChoice"
+        android:listSelector="@android:color/darker_gray"
         app:layout_constraintBottom_toTopOf="@+id/button5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -140,5 +139,15 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/saveButton" />
+
+    <Button
+        android:id="@+id/generateVaribalesButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Generate Variables"
+        app:layout_constraintEnd_toStartOf="@+id/saveButton"
+        app:layout_constraintStart_toEndOf="@+id/loadButton"
+        app:layout_constraintTop_toBottomOf="@+id/editMessage" />
 
 </android.support.constraint.ConstraintLayout>
