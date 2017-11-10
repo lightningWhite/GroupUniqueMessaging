@@ -66,9 +66,10 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences contactPref = this.getSharedPreferences(CONTACT_FILE, MODE_PRIVATE);
         Gson gson = new Gson();
 
-        // Get the stored json list of contacts
+        // Get the stored json list of contacts. Note: This line prevents it from populating the list in the ContactListViewTask
         _contactList = gson.fromJson(contactPref.getString(CONTACT_KEY, null),
-                new TypeToken<ArrayList<Contact>>(){}.getType());
+                new TypeToken<ArrayList<Contact>>() {
+                }.getType());
 
         // If there are no saved contacts in the shared preferences, allocate a new ArrayList
         if (_contactList == null) {
@@ -80,8 +81,9 @@ public class MainActivity extends AppCompatActivity {
         final ListView contactListView = (ListView) findViewById(R.id.contactListView);
         contactListView.setAdapter(contactArrayAdapter);
 
-        // If there are contacts to load, populate the contact ListView with them
-        if (_contactList != null) {
+        // If there are contacts to load, populate the contact ListView with them (I don't think it ever goes here because of when we get the json)
+        if (_contactList != null && _contactList.isEmpty()) {
+            Log.d("MainActivity", "THIS IS STINKING CRAZY!!!!!!!!!!!!");
             // Add the list of contacts to the contactListView in an AsyncTask for threading
             ContactListViewTask addContact = new ContactListViewTask(contactArrayAdapter, _contactList,
                     MainActivity.this);
