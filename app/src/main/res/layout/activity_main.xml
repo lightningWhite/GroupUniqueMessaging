@@ -146,6 +146,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Generate Variables"
+        app:layout_constraintBottom_toTopOf="@+id/textView2"
         app:layout_constraintEnd_toStartOf="@+id/saveButton"
         app:layout_constraintStart_toEndOf="@+id/loadButton"
         app:layout_constraintTop_toBottomOf="@+id/editMessage" />
