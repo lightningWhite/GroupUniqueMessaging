@@ -21,6 +21,12 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ *  The code that was used to retrieve contacts is modified code
+ *      from: https://gist.github.com/evandrix/7058235
+ *
+ */
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
