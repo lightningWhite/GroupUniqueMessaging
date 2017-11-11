@@ -15,7 +15,7 @@
         android:layout_marginTop="16dp"
         android:background="@android:drawable/editbox_dropdown_light_frame"
         android:ems="10"
-        android:focusableInTouchMode="false"
+        android:focusableInTouchMode="true"
         android:gravity="top|left"
         android:inputType="textMultiLine"
         android:selectAllOnFocus="false"
@@ -26,27 +26,26 @@
     <Button
         android:id="@+id/loadButton"
         android:layout_width="140dp"
-        android:layout_height="47dp"
-        android:layout_marginEnd="8dp"
+        android:layout_height="55dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:onClick="btnLoadTemplate"
         android:text="Load Template"
-        app:layout_constraintEnd_toStartOf="@+id/generateVaribalesButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editMessage" />
 
     <Button
         android:id="@+id/saveButton"
-        android:layout_width="96dp"
-        android:layout_height="47dp"
+        android:layout_width="60dp"
+        android:layout_height="55dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:text="Save"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/generateVaribalesButton"
-        app:layout_constraintTop_toBottomOf="@+id/editMessage" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/loadButton"
+        app:layout_constraintEnd_toStartOf="@+id/generateVaribalesButton"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/loadButton" />
 
     <ListView
         android:id="@+id/contactListView"
@@ -138,17 +137,19 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/saveButton" />
+        app:layout_constraintTop_toBottomOf="@+id/generateVaribalesButton" />
 
     <Button
         android:id="@+id/generateVaribalesButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="140dp"
+        android:layout_height="55dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginTop="4dp"
         android:text="Generate Variables"
-        app:layout_constraintBottom_toTopOf="@+id/textView2"
-        app:layout_constraintEnd_toStartOf="@+id/saveButton"
-        app:layout_constraintStart_toEndOf="@+id/loadButton"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editMessage" />
 
 </android.support.constraint.ConstraintLayout>
