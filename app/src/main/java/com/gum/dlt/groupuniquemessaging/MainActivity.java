@@ -105,19 +105,7 @@ public class MainActivity extends AppCompatActivity {
         prefsEditor.putString(CONTACT_KEY, json);
         prefsEditor.commit();
     }
-
-    // TODO: This apparently gets called even when switching between activities.
-    // TODO: We need to clear the shared preferences or else the app will always load with the previous contacts.
-//    @Override
-//    public void onDestroy() {
-//        super.onDestroy();
-//        SharedPreferences mPrefs = getSharedPreferences(CONTACT_FILE, MODE_PRIVATE);
-//        SharedPreferences.Editor pEditor = mPrefs.edit();
-//        pEditor.clear();
-//        pEditor.commit();
-//
-//    }
-
+    
     /**
      * This method starts an activity that gives the user access to the phone's stored contacts
      * so the user can select a contact to add to the list.
