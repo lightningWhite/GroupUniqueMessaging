@@ -31,7 +31,7 @@ public class ContactListViewTask extends AsyncTask<Void, Contact, Void> {
     @Override
     protected Void doInBackground(Void... params) {
 
-        // Traverse throught the list of contacts and publish them
+        // Traverse through the list of contacts and publish them
         for (Contact contact: _contacts) {
             publishProgress(contact);
         }
