@@ -9,11 +9,11 @@ import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
@@ -38,9 +38,12 @@ public class MainActivity extends AppCompatActivity {
 
     // All contacts are stored in this list
     ArrayList<Contact> _contactList;
+    List<String> _templateVariableNames;
 
     // An adapter to interact between the _contactList and the contactListVeiw.
-    ContactsAdapter contactArrayAdapter;
+    ContactsAdapter _contactsAdapter;
+
+    VariablesAdapter _variableAdapter;
 
     // contacts unique ID
     private String contactID;
@@ -62,11 +65,13 @@ public class MainActivity extends AppCompatActivity {
         // This makes it so the keyboard doesn't push up the buttons
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-
         ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_CONTACTS},1);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Allocate a list for the template message's variable block names
+        _templateVariableNames = new ArrayList<>();
 
         // Load the SharedPreferences file containing the contacts that were saved for activity switches
         SharedPreferences contactPref = this.getSharedPreferences(CONTACT_FILE, MODE_PRIVATE);
@@ -83,14 +88,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Create the array adapter so we can populate the contactListView
-        contactArrayAdapter = new ContactsAdapter(this, android.R.layout.simple_selectable_list_item, _contactList);
+        _contactsAdapter = new ContactsAdapter(this, android.R.layout.simple_selectable_list_item, _contactList);
         final ListView contactListView = (ListView) findViewById(R.id.contactListView);
-        contactListView.setAdapter(contactArrayAdapter);
+        contactListView.setAdapter(_contactsAdapter);
 
         // If there are contacts to load, populate the contact ListView with them (I don't think it ever goes here because of when we get the json)
         if (_contactList != null && _contactList.isEmpty()) {
             // Add the list of contacts to the contactListView in an AsyncTask for threading
-            ContactListViewTask addContact = new ContactListViewTask(contactArrayAdapter, _contactList,
+            ContactListViewTask addContact = new ContactListViewTask(_contactsAdapter, _contactList,
                     MainActivity.this);
             addContact.execute();
         }
@@ -127,6 +132,8 @@ public class MainActivity extends AppCompatActivity {
         Log.d("onClickSelectContact()", "setup");
         // using native contacts selection
         startActivityForResult(new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI), REQUEST_CODE_PICK_CONTACTS);
+        _contactList.get(_contactList.size() - 1).set_variable_block_names(_templateVariableNames);
+        // Todo: get var list array adapter going
     }
 
     /**
@@ -155,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Add the contact to the ListView
-        contactArrayAdapter.add(contact);
+        _contactsAdapter.add(contact);
     }
 
     /**
@@ -232,9 +239,36 @@ public class MainActivity extends AppCompatActivity {
      */
     public void onRemoveContact(View btnSelectContact) {
         if (!_contactList.isEmpty()) {
-            int pos = contactArrayAdapter.getSelectedItem();
+            int pos = _contactsAdapter.getSelectedItem();
             _contactList.remove(_contactList.remove(pos));
-            contactArrayAdapter.notifyDataSetChanged();
+            _contactsAdapter.notifyDataSetChanged();
+        }
+    }
+
+    /**
+     * This method will get the names of the variable blocks and...
+     * @param view
+     */
+    public void onGenerateVariables(View view) {
+
+        // Get the template from the textBox
+        EditText textBox = (EditText) findViewById(R.id.editMessage);
+        Editable template = textBox.getText();
+        String templateString = template.toString();
+
+        // Create a message object to insert into the contact
+        Message message = new Message();
+        message.set_msg_template(templateString);
+        _templateVariableNames = message.get_variable_names_from_template();
+
+        // Set the contacts's variable block names for all contacts already in the contacts list
+        for (Contact contact: _contactList) {
+            contact.set_message(message);
+
+            // Make sure we don't overwrite any potentially set contact variable values
+            if (!contact.get_hasVarBlocks()) {
+                contact.set_variable_block_names(_templateVariableNames);
+            }
         }
     }
 }

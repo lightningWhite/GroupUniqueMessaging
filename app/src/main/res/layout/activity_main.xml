@@ -146,6 +146,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="4dp"
+        android:onClick="onGenerateVariables"
         android:text="Generate Variables"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
