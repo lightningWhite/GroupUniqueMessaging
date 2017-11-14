@@ -24,7 +24,7 @@ public class ContactParser {
         // Place each character of the variable into a string until end of block or end of
         // string
         int i = 0;
-        while (i < contactLabel.length() && contactLabel.charAt(i) != '>') {
+        while (i < contactLabel.length() && contactLabel.charAt(i) != ' ') {
             firstName += contactLabel.charAt(i);
             // Go to the next letter in the variable
             i++;
