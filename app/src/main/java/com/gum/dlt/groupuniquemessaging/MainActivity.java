@@ -1,15 +1,18 @@
 package com.gum.dlt.groupuniquemessaging;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -47,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
 
     // contacts unique ID
     private String contactID;
+
+    // variable for saving templates with a title
+    private String _templateTitle = "";
 
     /**
      * Respond to the Load Template Button.
@@ -293,5 +299,40 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    /**
+     * This method will save the templates with a custom title
+     *      which will cause a pop up box to appear
+     */
+    public void onSaveTemplates(View view){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter a title for the template");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                _templateTitle = input.getText().toString();
+
+                Log.i(TAG, "The template title is: " + _templateTitle);
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 }
