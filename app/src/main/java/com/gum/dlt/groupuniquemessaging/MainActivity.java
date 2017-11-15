@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         prefsEditor.putString(CONTACT_KEY, json);
         prefsEditor.commit();
     }
-    
+
     /**
      * This method starts an activity that gives the user access to the phone's stored contacts
      * so the user can select a contact to add to the list.
@@ -132,8 +132,28 @@ public class MainActivity extends AppCompatActivity {
         Log.d("onClickSelectContact()", "setup");
         // using native contacts selection
         startActivityForResult(new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI), REQUEST_CODE_PICK_CONTACTS);
-        _contactList.get(_contactList.size() - 1).set_variable_block_names(_templateVariableNames);
-        // Todo: get var list array adapter going
+        if(_templateVariableNames != null && (!_templateVariableNames.isEmpty())) {
+            // Get the last contact in the list since it is the most recently added contact and set its variables
+            _contactList.get(_contactList.size() - 1).set_variable_block_names(_templateVariableNames);
+
+            // Get the template from the textBox
+            EditText textBox = (EditText) findViewById(R.id.editMessage);
+            Editable template = textBox.getText();
+            String templateString = template.toString();
+
+            // Create a message object to insert into the contact
+            Message message = new Message();
+            message.set_msg_template(templateString);
+
+            List<String> tempContactVars;
+            tempContactVars = _contactList.get(_contactList.size() - 1).get_variables();
+            if (tempContactVars != null) {
+                for (String var : tempContactVars) {
+                    Log.d(TAG, "THIS IS THE VAR FOR CONTACT ADDED: " + var);
+                }
+            }
+        }
+
     }
 
     /**
@@ -261,13 +281,16 @@ public class MainActivity extends AppCompatActivity {
         message.set_msg_template(templateString);
         _templateVariableNames = message.get_variable_names_from_template();
 
-        // Set the contacts's variable block names for all contacts already in the contacts list
-        for (Contact contact: _contactList) {
-            contact.set_message(message);
+        // Make sure there are contacts in the list
+        if (!_contactList.isEmpty()) {
+            // Set the contacts's variable block names for all contacts already in the contacts list
+            for (Contact contact : _contactList) {
+                contact.set_message(message);
 
-            // Make sure we don't overwrite any potentially set contact variable values
-            if (!contact.get_hasVarBlocks()) {
-                contact.set_variable_block_names(_templateVariableNames);
+                // Make sure we don't overwrite any potentially set contact variable values
+                if (!contact.get_hasVarBlocks()) {
+                    contact.set_variable_block_names(_templateVariableNames);
+                }
             }
         }
     }
