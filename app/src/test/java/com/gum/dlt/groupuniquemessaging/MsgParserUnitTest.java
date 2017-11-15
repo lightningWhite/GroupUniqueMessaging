@@ -24,29 +24,35 @@ public class MsgParserUnitTest {
 
         // Normal case
         String msg1 = "Hello <name> will you come to <place>?";
-        MsgParser parser = new MsgParser(msg1);
-        List<String> variables = parser.getVariableNames();
+        MsgParser parser1 = new MsgParser(msg1);
+        List<String> variables = parser1.getVariableNames();
         assertEquals(variables.get(0), "name");
         assertEquals(variables.get(1), "place");
 
         // Missing end bracket in middle of message
         String msg2 = "Hello <name will you come to <place>?";
-        MsgParser parser1 = new MsgParser(msg2);
-        variables = parser1.getVariableNames();
+        MsgParser parser2 = new MsgParser(msg2);
+        variables = parser2.getVariableNames();
         assertEquals(variables.get(0), "name will you come to <place");
 
         // Missing beginning bracket in middle of message
         String msg3 = "Hello name> will you come to <place>?";
-        MsgParser parser2 = new MsgParser(msg3);
-        variables = parser2.getVariableNames();
+        MsgParser parser3 = new MsgParser(msg3);
+        variables = parser3.getVariableNames();
         assertEquals(variables.get(0), "place");
 
         // Missing missing closing bracket at end of message
         String msg4 = "Hello <name> will you come to <place";
-        MsgParser parser3 = new MsgParser(msg4);
-        variables = parser3.getVariableNames();
+        MsgParser parser4 = new MsgParser(msg4);
+        variables = parser4.getVariableNames();
         assertEquals(variables.get(0), "name");
         assertEquals(variables.get(1), "place");
+
+        // Missing missing closing bracket at end of message
+        String msg5 = "";
+        MsgParser parser5 = new MsgParser(msg5);
+        variables = parser5.getVariableNames();
+        assert(variables.isEmpty());
     }
 
     /**
