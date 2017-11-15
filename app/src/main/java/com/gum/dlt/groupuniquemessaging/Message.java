@@ -15,6 +15,12 @@ public class Message {
     public MsgParser _parser; // TODO: This should be declared as Parser so we can program to an interface instead of a class
 
 
+    public void Message() {
+        _msgTitle = "";
+        _msgTemplate = "";
+        _parser = new MsgParser(_msgTemplate);
+    }
+
     /**
      * Constructor to receive a title of the message as well as the message template. It
      * also createa a Parser object to be used for inserting and obtaining the variables
@@ -59,6 +65,8 @@ public class Message {
      */
     public void set_msg_template(String _msgWithVariables) {
         this._msgTemplate = _msgWithVariables;
+        // Update the parser with the new message
+        _parser.set_message(_msgWithVariables);
     }
 
     /**

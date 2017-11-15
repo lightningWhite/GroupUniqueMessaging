@@ -19,6 +19,14 @@ public class MsgParser {
         _variables = new ArrayList<>();
     }
 
+    public String get_message() {
+        return _message;
+    }
+
+    public void set_message(String _message) {
+        this._message = _message;
+    }
+
     /**
      * This method will return the names of all of the variables contained within the passed
      * message.
