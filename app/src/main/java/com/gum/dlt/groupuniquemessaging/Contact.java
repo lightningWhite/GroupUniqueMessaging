@@ -82,7 +82,9 @@ public class Contact {
         }
 
         // Indicate that the variable names have been set
-        _hasVarBlocks = true;
+        if (!_variables.isEmpty()) {
+            _hasVarBlocks = true;
+        }
     }
 
     public Boolean get_hasVarBlocks() {
