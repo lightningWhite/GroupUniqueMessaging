@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
             ContactListViewTask addContact = new ContactListViewTask(_contactsAdapter, _contactList,
                     MainActivity.this);
             addContact.execute();
+            Log.i(TAG, "Contacts added.");
         }
     }
 
