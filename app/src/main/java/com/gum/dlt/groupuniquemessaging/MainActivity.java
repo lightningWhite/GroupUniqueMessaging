@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -99,6 +100,40 @@ public class MainActivity extends AppCompatActivity {
                     MainActivity.this);
             addContact.execute();
         }
+
+        /* Listener for when a contact is selected to show the contact's variables.
+        * This is also used to add the message and generated variables to the contact if the
+        * selected contact was added after the generate variables button was clicked. */
+        contactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
+                Contact selectedFromList = (Contact) (contactListView.getItemAtPosition(myItemInt));
+                Log.d("MainActivity", selectedFromList.get_contact());
+
+                // Set the added contact's variables and message if the message exists and vars are generated and the blocks haven't been set already
+                if(_templateVariableNames != null && (!_templateVariableNames.isEmpty()) && (!_contactList.get(myItemInt).get_varBlocksAdded())) {
+                    // Get the last contact in the list since it is the most recently added contact and set its variables
+                    _contactList.get(myItemInt).set_variable_block_names(_templateVariableNames);
+
+                    // Get the template from the textBox
+                    EditText textBox = (EditText) findViewById(R.id.editMessage);
+                    Editable template = textBox.getText();
+                    String templateString = template.toString();
+
+                    // Create a message object to insert into the contact
+                    Message message = new Message();
+                    message.set_msg_template(templateString);
+
+                    // Log the contact's variable blocks that were added to the contact
+                    List<String> tempContactVars;
+                    tempContactVars = _contactList.get(myItemInt).get_variables();
+                    if (tempContactVars != null) {
+                        for (String var : tempContactVars) {
+                            Log.d(TAG, "This is the variable block added to the contact: " + var);
+                        }
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -132,27 +167,30 @@ public class MainActivity extends AppCompatActivity {
         Log.d("onClickSelectContact()", "setup");
         // using native contacts selection
         startActivityForResult(new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI), REQUEST_CODE_PICK_CONTACTS);
-        if(_templateVariableNames != null && (!_templateVariableNames.isEmpty())) {
-            // Get the last contact in the list since it is the most recently added contact and set its variables
-            _contactList.get(_contactList.size() - 1).set_variable_block_names(_templateVariableNames);
 
-            // Get the template from the textBox
-            EditText textBox = (EditText) findViewById(R.id.editMessage);
-            Editable template = textBox.getText();
-            String templateString = template.toString();
-
-            // Create a message object to insert into the contact
-            Message message = new Message();
-            message.set_msg_template(templateString);
-
-            List<String> tempContactVars;
-            tempContactVars = _contactList.get(_contactList.size() - 1).get_variables();
-            if (tempContactVars != null) {
-                for (String var : tempContactVars) {
-                    Log.d(TAG, "THIS IS THE VAR FOR CONTACT ADDED: " + var);
-                }
-            }
-        }
+        // DUE TO THREADING THIS GETS EXECUTED BEFORE THE CONTACT IS EVEN ADDED
+//        // Set the added contact's variables and message if the message exists and vars are generated
+//        if(_templateVariableNames != null && (!_templateVariableNames.isEmpty()) && (!_contactList.isEmpty())) {
+//            // Get the last contact in the list since it is the most recently added contact and set its variables
+//            _contactList.get(_contactList.size() - 1).set_variable_block_names(_templateVariableNames);
+//
+//            // Get the template from the textBox
+//            EditText textBox = (EditText) findViewById(R.id.editMessage);
+//            Editable template = textBox.getText();
+//            String templateString = template.toString();
+//
+//            // Create a message object to insert into the contact
+//            Message message = new Message();
+//            message.set_msg_template(templateString);
+//
+//            List<String> tempContactVars;
+//            tempContactVars = _contactList.get(_contactList.size() - 1).get_variables();
+//            if (tempContactVars != null) {
+//                for (String var : tempContactVars) {
+//                    Log.d(TAG, "THIS IS THE VAR FOR CONTACT ADDED: " + var);
+//                }
+//            }
+//        }
 
     }
 
@@ -277,20 +315,27 @@ public class MainActivity extends AppCompatActivity {
         String templateString = template.toString();
 
         // Create a message object to insert into the contact
+        Log.d(TAG, "About to create the message for the contact...");
         Message message = new Message();
+        Log.d(TAG, "About to set the message template in the message object...");
         message.set_msg_template(templateString);
         _templateVariableNames = message.get_variable_names_from_template();
 
+        for (String variable: _templateVariableNames) {
+            Log.d(TAG, "Parsed Variable: " + variable);
+        }
+
+        Log.d(TAG, "About to check if the _contactList is empty...");
         // Make sure there are contacts in the list
         if (!_contactList.isEmpty()) {
             // Set the contacts's variable block names for all contacts already in the contacts list
+            Log.d(TAG, "About to set the message in each of the existing contacts...");
             for (Contact contact : _contactList) {
                 contact.set_message(message);
 
                 // Make sure we don't overwrite any potentially set contact variable values
-                if (!contact.get_hasVarBlocks()) {
-                    contact.set_variable_block_names(_templateVariableNames);
-                }
+                Log.d(TAG, "About to set the variable block names of the contact...");
+                contact.set_variable_block_names(_templateVariableNames);
             }
         }
     }
