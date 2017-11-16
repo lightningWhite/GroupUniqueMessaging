@@ -1,5 +1,7 @@
 package com.gum.dlt.groupuniquemessaging;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,8 @@ import java.util.List;
  * variables in the place of variable blocks.
  */
 public class MsgParser {
+
+    final String TAG = this.getClass().getName();
 
     String _message;
     List<String> _variables;
@@ -23,8 +27,11 @@ public class MsgParser {
         return _message;
     }
 
-    public void set_message(String _message) {
-        this._message = _message;
+    public void set_message(String message) {
+        Log.d(TAG, "About to set_message in the MsgParser");
+        if (message != null && !message.isEmpty()) {
+            this._message = message;
+        }
     }
 
     /**
@@ -115,6 +122,7 @@ public class MsgParser {
                 variable = "";
             }
         }
+        Log.i(TAG, "The variables have been parsed from the template");
         return _variables;
     }
 }
