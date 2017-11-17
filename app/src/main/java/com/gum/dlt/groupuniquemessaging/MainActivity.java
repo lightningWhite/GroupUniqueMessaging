@@ -18,6 +18,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -39,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
     final String CONTACT_KEY = "contactKey";
     private Uri uriContact;
 
+    // File to save templates
+    final String TEMPLATE_FILE = "savedTemplates";
+
     // All contacts are stored in this list
     ArrayList<Contact> _contactList;
     List<String> _templateVariableNames;
@@ -53,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
     // variable for saving templates with a title
     private String _templateTitle = "";
+
 
     /**
      * Respond to the Load Template Button.
@@ -304,6 +310,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * This method will save the templates with a custom title
      *      which will cause a pop up box to appear
+     *      Using modified code from https://stackoverflow.com/questions/10903754/input-text-dialog-android
      */
     public void onSaveTemplates(View view){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -322,7 +329,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 _templateTitle = input.getText().toString();
 
-                Log.i(TAG, "The template title is: " + _templateTitle);
+                onSaveListen();
+
             }
         });
 
@@ -334,5 +342,32 @@ public class MainActivity extends AppCompatActivity {
         });
 
         builder.show();
+    }
+    /*
+     *  This method takes the Template title and Template message and saves
+     *      them using Shared Preferences
+     */
+    public void onSaveListen(){
+        EditText template = (EditText) findViewById(R.id.editMessage);
+
+        String templateMessage;
+
+        // get the template message
+        templateMessage = template.getText().toString();
+
+        SharedPreferences mPrefs = getSharedPreferences(TEMPLATE_FILE, MODE_PRIVATE);
+
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+
+       // Log.d("MainActivity", json);
+
+        prefsEditor.putString(_templateTitle, templateMessage);
+
+        Log.i(TAG, "The template title is: " + _templateTitle);
+        Log.i(TAG, "The template message is: " + templateMessage);
+
+        prefsEditor.commit();
+
+        Toast.makeText(this, "Template Saved", Toast.LENGTH_SHORT).show();
     }
 }
