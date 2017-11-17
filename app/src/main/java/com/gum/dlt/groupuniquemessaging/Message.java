@@ -1,5 +1,8 @@
 package com.gum.dlt.groupuniquemessaging;
 
+import android.util.Log;
+import android.widget.TextView;
+
 import java.util.List;
 
 /**
@@ -8,6 +11,9 @@ import java.util.List;
  */
 
 public class Message {
+
+    final String TAG = "Message";
+
     public String _msgTitle;
     public List<String> _variables;
     public String _msgTemplate;
@@ -15,7 +21,10 @@ public class Message {
     public MsgParser _parser; // TODO: This should be declared as Parser so we can program to an interface instead of a class
 
 
-    public void Message() {
+    /**
+     * Default constructor to initialize the member variables, especially the parser.
+     */
+    Message() {
         _msgTitle = "";
         _msgTemplate = "";
         _parser = new MsgParser(_msgTemplate);
@@ -28,7 +37,7 @@ public class Message {
      * @param msgTitle
      * @param msgTemplate
      */
-    public void Message(String msgTitle, String msgTemplate) {
+    Message(String msgTitle, String msgTemplate) {
         _msgTitle = msgTitle;
         _msgTemplate = msgTemplate;
         _parser = new MsgParser(_msgTemplate);
@@ -61,12 +70,18 @@ public class Message {
 
     /**
      * This method sets the member variable containing the message template.
-     * @param _msgWithVariables
+     * @param templateString
      */
-    public void set_msg_template(String _msgWithVariables) {
-        this._msgTemplate = _msgWithVariables;
-        // Update the parser with the new message
-        _parser.set_message(_msgWithVariables);
+    public void set_msg_template(String templateString) {
+        Log.d(TAG, "Setting the _msgTemplate in the Message object...");
+
+        if (templateString != null) {
+            Log.d(TAG, "_msgWithVariables isn't null in set_msg_template");
+
+            _msgTemplate = templateString;
+            _parser.set_message(_msgTemplate);
+
+        }
     }
 
     /**

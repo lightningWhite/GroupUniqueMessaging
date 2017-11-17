@@ -1,5 +1,6 @@
 package com.gum.dlt.groupuniquemessaging;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,18 +18,26 @@ public class Contact {
     public Message _message;
     public ContactParser _parser;
     public List<String> _variables;
-    public Boolean _hasVarBlocks; // Check to see if variable block names have been inserted to
-                                  // prevent overwriting them
+    public boolean _varBlocksAdded;
 
     private String _firstName;
+
+    public void Contact() {
+        _contact = "";
+        _phoneNumber = "";
+        _message = new Message();
+        _parser = new ContactParser(this);
+        _variables = new ArrayList<>();
+        _varBlocksAdded = false;
+    }
 
     public void Contact(String contact, String phoneNumber){
         _contact = contact;
         _phoneNumber = phoneNumber;
         _parser = new ContactParser(this);
         _message = new Message();
-       _hasVarBlocks = false;
        _firstName = _parser.getContactFirstName();
+       _varBlocksAdded = false;
     }
 
     public String get_contact() {
@@ -65,10 +74,10 @@ public class Contact {
 
     /**
      * Insert the names of the variable blocks to the list of variables.
-     * @param _variables
+     * @param variables
      */
-    public void set_variable_block_names(List<String> _variables) {
-        this._variables = _variables;
+    public void set_variable_block_names(List<String> variables) {
+        this._variables = variables;
 
         // Check if any of the variable blocks is a <contact> and set it to the contact's first name
         for (int i = 0; i < _variables.size(); i++) {
@@ -81,18 +90,10 @@ public class Contact {
             }
         }
 
-        // Indicate that the variable names have been set
+        // Indicate that the variable blocks names have been added
         if (!_variables.isEmpty()) {
-            _hasVarBlocks = true;
+            set_varBlocksAdded(true);
         }
-    }
-
-    public Boolean get_hasVarBlocks() {
-        return _hasVarBlocks;
-    }
-
-    public void set_hasVarBlocks(Boolean setHasVarBlocks) {
-        _hasVarBlocks = setHasVarBlocks;
     }
 
     /**
@@ -105,5 +106,13 @@ public class Contact {
     public void set_variableAtIndex(String variable, int index) {
         _variables.add(index, variable);
         _variables.remove(index + 1);
+    }
+
+    public boolean get_varBlocksAdded() {
+        return _varBlocksAdded;
+    }
+
+    public void set_varBlocksAdded(boolean varBlocksAdded) {
+        this._varBlocksAdded = varBlocksAdded;
     }
 }
