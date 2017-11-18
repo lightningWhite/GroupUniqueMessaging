@@ -147,6 +147,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // Create the array adapter so we can populate the variableList
+        final ListView variableListView = (ListView) findViewById(R.id.variableList);
+        variableListView.setAdapter(_variableAdapter);
+
+        /**
+         * Listener for when a variable is selected to give the popup window for input.
+         */
+        
     }
 
     /**
@@ -416,4 +425,6 @@ public class MainActivity extends AppCompatActivity {
 
         Toast.makeText(this, "Template Saved", Toast.LENGTH_SHORT).show();
     }
+
+
 }
