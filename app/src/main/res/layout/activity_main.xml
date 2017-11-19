@@ -58,12 +58,12 @@
         android:choiceMode="singleChoice"
         android:listSelector="@android:color/darker_gray"
         app:layout_constraintBottom_toTopOf="@+id/button4"
-        app:layout_constraintEnd_toStartOf="@+id/variableList"
+        app:layout_constraintEnd_toStartOf="@+id/variablesListView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <ListView
-        android:id="@+id/variableList"
+        android:id="@+id/variablesListView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
