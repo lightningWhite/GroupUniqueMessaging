@@ -405,7 +405,7 @@ public class MainActivity extends AppCompatActivity {
 
         builder.show();
     }
-    
+
     /*
      *  This method takes the Template title and Template message and saves
      *      them using Shared Preferences
