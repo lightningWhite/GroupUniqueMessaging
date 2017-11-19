@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -41,14 +42,20 @@ public class MainActivity extends AppCompatActivity {
     private Uri uriContact;
 
     // All contacts are stored in this list
-    ArrayList<Contact> _contactList;
+    List<Contact> _contactList;
+
+    // The generated variable block names stored here
     List<String> _templateVariableNames;
+
+    List<String> _variablesList;
+
+
 
     // An adapter to interact between the _contactList and the contactListVeiw.
     ContactsAdapter _contactsAdapter;
 
-    VariablesAdapter _variableAdapter;
-
+    //VariablesAdapter _variablesAdapter; // TODO: figure out why this can't find the R.id.variableName
+    ArrayAdapter<String> _variablesAdapter;
     // contacts unique ID
     private String contactID;
 
@@ -80,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         // Allocate a list for the template message's variable block names
         _templateVariableNames = new ArrayList<>();
 
+
         // Load the SharedPreferences file containing the contacts that were saved for activity switches
         SharedPreferences contactPref = this.getSharedPreferences(CONTACT_FILE, MODE_PRIVATE);
         Gson gson = new Gson();
@@ -94,10 +102,19 @@ public class MainActivity extends AppCompatActivity {
             _contactList = new ArrayList<>();
         }
 
-        // Create the array adapter so we can populate the contactListView
+        // Create the contacts adapter so we can populate the contactListView
         _contactsAdapter = new ContactsAdapter(this, android.R.layout.simple_selectable_list_item, _contactList);
         final ListView contactListView = (ListView) findViewById(R.id.contactListView);
         contactListView.setAdapter(_contactsAdapter);
+
+        // Allocate list for the variablesList items
+        _variablesList =  new ArrayList<>();
+
+        // Create the contacts adapter so we can populate the variablesListView
+        //_variablesAdapter = new VariablesAdapter(this, android.R.layout.simple_selectable_list_item, _variablesList);
+        _variablesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_selectable_list_item, _variablesList);
+        final ListView variablesListView = (ListView) findViewById(R.id.variablesListView);
+        variablesListView.setAdapter(_variablesAdapter);
 
         // If there are contacts to load, populate the contact ListView with them (I don't think it ever goes here because of when we get the json)
         if (_contactList != null && _contactList.isEmpty()) {
@@ -113,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         contactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
                 Contact selectedFromList = (Contact) (contactListView.getItemAtPosition(myItemInt));
-                Log.d("MainActivity", selectedFromList.get_contact());
+                Log.d("MainActivity", selectedFromList.get_contactName());
 
                 // Set the added contact's variables and message if the message exists and vars are generated and the blocks haven't been set already
                 if(_templateVariableNames != null && (!_templateVariableNames.isEmpty()) && (!_contactList.get(myItemInt).get_varBlocksAdded())) {
@@ -137,6 +154,15 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, "This is the variable block added to the contact: " + var);
                         }
                     }
+                }
+
+                Log.d(TAG, "ABOUT TO REASSIGN THE VARIABLES!!!");
+                _variablesAdapter.clear();
+                _variablesList.addAll(_contactList.get(myItemInt).get_variables());
+                _variablesAdapter.notifyDataSetChanged();
+
+                for(String var: _variablesList) {
+                    Log.d(TAG, "THE VAR IS!!! : " + var);
                 }
             }
         });
@@ -173,31 +199,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d("onClickSelectContact()", "setup");
         // using native contacts selection
         startActivityForResult(new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI), REQUEST_CODE_PICK_CONTACTS);
-
-        // DUE TO THREADING THIS GETS EXECUTED BEFORE THE CONTACT IS EVEN ADDED
-//        // Set the added contact's variables and message if the message exists and vars are generated
-//        if(_templateVariableNames != null && (!_templateVariableNames.isEmpty()) && (!_contactList.isEmpty())) {
-//            // Get the last contact in the list since it is the most recently added contact and set its variables
-//            _contactList.get(_contactList.size() - 1).set_variable_block_names(_templateVariableNames);
-//
-//            // Get the template from the textBox
-//            EditText textBox = (EditText) findViewById(R.id.editMessage);
-//            Editable template = textBox.getText();
-//            String templateString = template.toString();
-//
-//            // Create a message object to insert into the contact
-//            Message message = new Message();
-//            message.set_msg_template(templateString);
-//
-//            List<String> tempContactVars;
-//            tempContactVars = _contactList.get(_contactList.size() - 1).get_variables();
-//            if (tempContactVars != null) {
-//                for (String var : tempContactVars) {
-//                    Log.d(TAG, "THIS IS THE VAR FOR CONTACT ADDED: " + var);
-//                }
-//            }
-//        }
-
     }
 
     /**
@@ -221,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
             String number = retrieveContactNumber();
 
             contact = new Contact();
-            contact.set_contact(name);
+            contact.set_contactName(name);
             contact.setPhoneNumber(number);
         }
 
@@ -344,40 +345,5 @@ public class MainActivity extends AppCompatActivity {
                 contact.set_variable_block_names(_templateVariableNames);
             }
         }
-    }
-
-    /**
-     * This method will save the templates with a custom title
-     *      which will cause a pop up box to appear
-     */
-    public void onSaveTemplates(View view){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Enter a title for the template");
-
-        // Set up the input
-        final EditText input = new EditText(this);
-
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input);
-
-        // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                _templateTitle = input.getText().toString();
-
-                Log.i(TAG, "The template title is: " + _templateTitle);
-            }
-        });
-
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
     }
 }
