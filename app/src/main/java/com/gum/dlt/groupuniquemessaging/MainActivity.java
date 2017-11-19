@@ -152,6 +152,40 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // Create the array adapter so we can populate the variableList
+        final ListView variableListView = (ListView) findViewById(R.id.variableList);
+        variableListView.setAdapter(_variableAdapter);
+
+        /**
+         * Listener for when a variable is selected to give the popup window for input.
+         */
+        
+        variableListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+                //not sure the following line is needed.
+                //dialog.setCancelable(false);
+                dialog.setTitle("Enter your variable.");
+                dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        //Action for "Ok".
+                    }
+                })
+
+                .setNegativeButton("Cancel ", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Action for "Cancel".
+                    }
+                });
+
+                final AlertDialog alert = dialog.create();
+                alert.show();
+
+            }
+        });
     }
 
     /**
@@ -435,4 +469,6 @@ public class MainActivity extends AppCompatActivity {
 
         Toast.makeText(this, "Template Saved", Toast.LENGTH_SHORT).show();
     }
+
+
 }
