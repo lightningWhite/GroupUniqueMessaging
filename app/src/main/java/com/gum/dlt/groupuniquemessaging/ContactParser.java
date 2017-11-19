@@ -6,15 +6,24 @@ package com.gum.dlt.groupuniquemessaging;
 
 public class ContactParser {
 
-    Contact _contact;
-    String _firstName;
+    private String _contactName;
+    private String _firstName;
 
-    ContactParser(Contact contact) {
-        _contact = contact;
+//    ContactParser(Contact contact) {
+//        _contactName = contact;
+//    }
+
+
+    public String get_contactName() {
+        return _contactName;
     }
 
-    public String getContactFirstName() {
-        _firstName = parse(_contact.get_contact());
+    public void set_contactName(String _contactName) {
+        this._contactName = _contactName;
+    }
+
+    public String getContactFirstName(String fullContactName) {
+        _firstName = parse(fullContactName);
         return _firstName;
     }
 
