@@ -192,6 +192,14 @@ public class MainActivity extends AppCompatActivity {
                 //not sure the following line is needed.
                 //dialog.setCancelable(false);
                 dialog.setTitle("Enter your variable.");
+
+                // Set up the input
+                final EditText input = new EditText(MainActivity.this);
+
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                dialog.setView(input);
+
                 dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
