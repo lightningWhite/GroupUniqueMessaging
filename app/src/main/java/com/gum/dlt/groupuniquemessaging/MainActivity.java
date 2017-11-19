@@ -1,6 +1,7 @@
 package com.gum.dlt.groupuniquemessaging;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,11 +15,15 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -359,6 +364,7 @@ public class MainActivity extends AppCompatActivity {
      *      Using modified code from https://stackoverflow.com/questions/10903754/input-text-dialog-android
      */
     public void onSaveTemplates(View view){
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Enter a title for the template");
 
@@ -369,14 +375,24 @@ public class MainActivity extends AppCompatActivity {
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
+// Code to try to get the spinner working in a pop up
+//        View myView;
+//        myView = getLayoutInflater().inflate(R.layout.activity_main, null);
+//        Spinner spinner = (Spinner) findViewById(R.id.planets_spinner);
+//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.planets_array, android.R.layout.simple_spinner_item);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        if (spinner != null)
+//            spinner.setAdapter(adapter);
+
+
         // Set up the buttons
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 _templateTitle = input.getText().toString();
 
+                // passes template title to onSaveListen
                 onSaveListen();
-
             }
         });
 
@@ -389,6 +405,7 @@ public class MainActivity extends AppCompatActivity {
 
         builder.show();
     }
+    
     /*
      *  This method takes the Template title and Template message and saves
      *      them using Shared Preferences
@@ -405,11 +422,13 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
 
-       // Log.d("MainActivity", json);
-
         prefsEditor.putString(_templateTitle, templateMessage);
 
         Log.i(TAG, "The template title is: " + _templateTitle);
+
+        // gets all titles and messages
+        mPrefs.getAll();
+
         Log.i(TAG, "The template message is: " + templateMessage);
 
         prefsEditor.commit();
