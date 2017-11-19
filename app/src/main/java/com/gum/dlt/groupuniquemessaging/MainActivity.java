@@ -1,6 +1,7 @@
 package com.gum.dlt.groupuniquemessaging;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,12 +15,17 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -41,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
     final String CONTACT_KEY = "contactKey";
     private Uri uriContact;
 
+    // File to save templates
+    final String TEMPLATE_FILE = "savedTemplates";
+
     // All contacts are stored in this list
     List<Contact> _contactList;
 
@@ -61,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
     // variable for saving templates with a title
     private String _templateTitle = "";
+
 
     /**
      * Respond to the Load Template Button.
@@ -122,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
             ContactListViewTask addContact = new ContactListViewTask(_contactsAdapter, _contactList,
                     MainActivity.this);
             addContact.execute();
+            Log.i(TAG, "Contacts added.");
         }
 
         /* Listener for when a contact is selected to show the contact's variables.
@@ -164,6 +175,40 @@ public class MainActivity extends AppCompatActivity {
                 for(String var: _variablesList) {
                     Log.d(TAG, "THE VAR IS!!! : " + var);
                 }
+            }
+        });
+
+        // Create the array adapter so we can populate the variableList
+        final ListView variableListView = (ListView) findViewById(R.id.variableList);
+        variableListView.setAdapter(_variableAdapter);
+
+        /**
+         * Listener for when a variable is selected to give the popup window for input.
+         */
+
+        variableListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+                //not sure the following line is needed.
+                //dialog.setCancelable(false);
+                dialog.setTitle("Enter your variable.");
+                dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        //Action for "Ok".
+                    }
+                })
+
+                .setNegativeButton("Cancel ", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Action for "Cancel".
+                    }
+                });
+
+                final AlertDialog alert = dialog.create();
+                alert.show();
+
             }
         });
     }
@@ -346,4 +391,84 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * This method will save the templates with a custom title
+     *      which will cause a pop up box to appear
+     *      Using modified code from https://stackoverflow.com/questions/10903754/input-text-dialog-android
+     */
+    public void onSaveTemplates(View view){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter a title for the template");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+// Code to try to get the spinner working in a pop up
+//        View myView;
+//        myView = getLayoutInflater().inflate(R.layout.activity_main, null);
+//        Spinner spinner = (Spinner) findViewById(R.id.planets_spinner);
+//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.planets_array, android.R.layout.simple_spinner_item);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        if (spinner != null)
+//            spinner.setAdapter(adapter);
+
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                _templateTitle = input.getText().toString();
+
+                // passes template title to onSaveListen
+                onSaveListen();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    /*
+     *  This method takes the Template title and Template message and saves
+     *      them using Shared Preferences
+     */
+    public void onSaveListen(){
+        EditText template = (EditText) findViewById(R.id.editMessage);
+
+        String templateMessage;
+
+        // get the template message
+        templateMessage = template.getText().toString();
+
+        SharedPreferences mPrefs = getSharedPreferences(TEMPLATE_FILE, MODE_PRIVATE);
+
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+
+        prefsEditor.putString(_templateTitle, templateMessage);
+
+        Log.i(TAG, "The template title is: " + _templateTitle);
+
+        // gets all titles and messages
+        mPrefs.getAll();
+
+        Log.i(TAG, "The template message is: " + templateMessage);
+
+        prefsEditor.commit();
+
+        Toast.makeText(this, "Template Saved", Toast.LENGTH_SHORT).show();
+    }
+
+
 }
