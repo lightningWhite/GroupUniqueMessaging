@@ -16,12 +16,12 @@ import java.util.List;
 public class Contact {
 
     // Todo: It would probably be a good idea to use a factory for this Contact object
-    public String _contactName;
-    public String _phoneNumber;
-    public Message _message;
-    public ContactParser _parser;
-    public List<String> _variables;
-    public boolean _varBlocksAdded;
+    private String _contactName;
+    private String _phoneNumber;
+    private Message _message;
+    private ContactParser _parser;
+    private List<String> _variables;
+    private boolean _varBlocksAdded;
 
     private String _firstName;
 

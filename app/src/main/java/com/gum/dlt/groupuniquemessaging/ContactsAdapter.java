@@ -21,6 +21,8 @@ import java.util.List;
 
 public class ContactsAdapter extends ArrayAdapter<Contact> {
 
+    private int _selectedItem;
+
     private static class ViewHolder {
         private TextView itemView;
     }
@@ -33,6 +35,7 @@ public class ContactsAdapter extends ArrayAdapter<Contact> {
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
         Contact contact = getItem(position);
+        _selectedItem = position;
 
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
@@ -47,13 +50,11 @@ public class ContactsAdapter extends ArrayAdapter<Contact> {
         return convertView;
     }
 
-    private int selectedItem;
-
     public void setSelectedItem(int position) {
-        selectedItem = position;
+        _selectedItem = position;
     }
 
     public int getSelectedItem() {
-        return selectedItem;
+        return _selectedItem;
     }
 }

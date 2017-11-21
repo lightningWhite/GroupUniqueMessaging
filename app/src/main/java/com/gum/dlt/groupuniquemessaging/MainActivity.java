@@ -1,7 +1,6 @@
 package com.gum.dlt.groupuniquemessaging;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,16 +14,12 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -66,10 +61,19 @@ public class MainActivity extends AppCompatActivity {
     //VariablesAdapter _variablesAdapter; // TODO: figure out why this can't find the R.id.variableName
     ArrayAdapter<String> _variablesAdapter;
     // contacts unique ID
-    private String contactID;
+    private String _contactID;
 
     // variable for saving templates with a title
     private String _templateTitle = "";
+
+    // name for entered variable
+    private String _varName = "";
+
+    // our selected contact
+    private int _selectedContactPosition;
+
+    // our selected variable
+    private int _selectedVarPosition;
 
 
     /**
@@ -141,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
         contactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
                 Contact selectedFromList = (Contact) (contactListView.getItemAtPosition(myItemInt));
+                _selectedContactPosition = myItemInt;
                 Log.d("MainActivity", selectedFromList.get_contactName());
 
                 // Set the added contact's variables and message if the message exists and vars are generated and the blocks haven't been set already
@@ -189,16 +194,29 @@ public class MainActivity extends AppCompatActivity {
         variableListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-                //not sure the following line is needed.
-                //dialog.setCancelable(false);
+
+                _selectedVarPosition = position;
+
                 dialog.setTitle("Enter your variable.");
+
+                // Set up the input
+                final EditText input = new EditText(MainActivity.this);
+
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                dialog.setView(input);
+
+                // Set up the Ok button.
                 dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        //Action for "Ok".
+                        _varName = input.getText().toString();
+
+                        onClickOkVaribales();
                     }
                 })
 
+                // Set up the Cancel button.
                 .setNegativeButton("Cancel ", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -208,9 +226,15 @@ public class MainActivity extends AppCompatActivity {
 
                 final AlertDialog alert = dialog.create();
                 alert.show();
-
             }
         });
+    }
+
+    public void onClickOkVaribales() {
+        _contactList.get(_selectedContactPosition).set_variableAtIndex(_varName, _selectedVarPosition);
+        _variablesList.clear();
+        _variablesList.addAll(_contactList.get(_selectedContactPosition).get_variables());
+        _variablesAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -290,12 +314,12 @@ public class MainActivity extends AppCompatActivity {
 
         if (cursorID.moveToFirst()) {
 
-            contactID = cursorID.getString(cursorID.getColumnIndex(ContactsContract.Contacts._ID));
+            _contactID = cursorID.getString(cursorID.getColumnIndex(ContactsContract.Contacts._ID));
         }
 
         cursorID.close();
 
-        Log.d(TAG, "Contact ID: " + contactID);
+        Log.d(TAG, "Contact ID: " + _contactID);
 
         // Using the contact ID now we will get contact phone number
         Cursor cursorPhone = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -305,7 +329,7 @@ public class MainActivity extends AppCompatActivity {
                         ContactsContract.CommonDataKinds.Phone.TYPE + " = " +
                         ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE,
 
-                new String[]{contactID},
+                new String[]{_contactID},
                 null);
 
         if (cursorPhone.moveToFirst()) {
