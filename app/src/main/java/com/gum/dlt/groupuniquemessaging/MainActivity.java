@@ -179,8 +179,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Create the array adapter so we can populate the variableList
-        final ListView variableListView = (ListView) findViewById(R.id.variableList);
-        variableListView.setAdapter(_variableAdapter);
+        final ListView variableListView = (ListView) findViewById(R.id.variablesListView);
+        variableListView.setAdapter(_variablesAdapter);
 
         /**
          * Listener for when a variable is selected to give the popup window for input.
