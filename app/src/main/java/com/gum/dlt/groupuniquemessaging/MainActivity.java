@@ -194,8 +194,7 @@ public class MainActivity extends AppCompatActivity {
         variableListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-                //not sure the following line is needed.
-//                dialog.setCancelable(false);
+
                 _selectedVarPosition = position;
 
                 dialog.setTitle("Enter your variable.");
@@ -212,7 +211,6 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         _varName = input.getText().toString();
-                        //Action for "Ok".
 
                         onClickOkVaribales();
                     }
@@ -228,7 +226,6 @@ public class MainActivity extends AppCompatActivity {
 
                 final AlertDialog alert = dialog.create();
                 alert.show();
-
             }
         });
     }
