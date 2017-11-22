@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Daniel on 11/13/2017.
@@ -23,13 +24,18 @@ import java.util.ArrayList;
 
 public class VariablesAdapter extends ArrayAdapter<String> {
 
+    List<String> _variablesList;
+
     private static class ViewHolder {
         private TextView itemView;
     }
 
-    public VariablesAdapter(Context context, int textViewResourceId, ArrayList<String> items) {
-        super(context, textViewResourceId, items);
+    public VariablesAdapter(Context context, int textViewResourceId, List<String> variablesList) {
+        super(context, textViewResourceId, variablesList);
+        _variablesList.addAll(variablesList);
+
     }
+
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -42,9 +48,9 @@ public class VariablesAdapter extends ArrayAdapter<String> {
         }
 
         // Lookup view for data population
-        TextView variableName = (TextView) convertView.findViewById(R.id.variableName);
+        TextView variableName = (TextView) convertView.findViewById(R.id.variableName); // TODO: This is returning null causing it to fail
         // Populate the data into the template view using the data object
-        variableName.setText(variable);
+        variableName.setText(variableName.toString());
         // Return the completed view to render on screen
         return convertView;
     }
