@@ -3,7 +3,12 @@ package com.gum.dlt.groupuniquemessaging;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -12,6 +17,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class MessageTemplateActivity extends AppCompatActivity {
+
+    final String TAG = "MessageTemplateActivity";
 
     // File to save templates
     final String TEMPLATE_FILE = "savedTemplates";
@@ -24,6 +31,7 @@ public class MessageTemplateActivity extends AppCompatActivity {
 
     ArrayAdapter<String> _titlesAdapter;
 
+    int _selectedTemplatePosition = 0;
 
 
     @Override
@@ -53,6 +61,36 @@ public class MessageTemplateActivity extends AppCompatActivity {
         final ListView messageTemplates = (ListView) findViewById(R.id.messageTemplates);
         messageTemplates.setAdapter(_titlesAdapter);
 
+        // Listener for when a template is selected get the index of which template is selected.
+        messageTemplates.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
+                String selectedFromList = (String) (messageTemplates.getItemAtPosition(myItemInt));
+                _selectedTemplatePosition = myItemInt;
+                Log.d(TAG, selectedFromList);
+                }
 
+        });
+    }
+
+    /**
+     * Removes a selected template from the shared preferences.
+     * @param view
+     */
+    public void onDeleteTemplate(View view) {
+
+        if (_titleString != null && !_titleString.isEmpty()) {
+            // Get the title for the key
+            String templateTitle = _titleString.get(_selectedTemplatePosition);
+
+            SharedPreferences mPrefs = getSharedPreferences(TEMPLATE_FILE, MODE_PRIVATE);
+            SharedPreferences.Editor editor = mPrefs.edit();
+
+            // Remove the template associated with the title key
+            editor.remove(templateTitle);
+            editor.commit();
+
+            _titleString.remove(_selectedTemplatePosition);
+            _titlesAdapter.notifyDataSetChanged();
+        }
     }
 }
