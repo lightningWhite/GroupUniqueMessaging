@@ -1,15 +1,20 @@
 package com.gum.dlt.groupuniquemessaging;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.*;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,29 +73,55 @@ public class MessageTemplateActivity extends AppCompatActivity {
                 _selectedTemplatePosition = myItemInt;
                 Log.d(TAG, selectedFromList);
                 }
-
         });
     }
 
     /**
      * Removes a selected template from the shared preferences.
-     * @param view
      */
     public void onDeleteTemplate(View view) {
 
         if (_titleString != null && !_titleString.isEmpty()) {
             // Get the title for the key
-            String templateTitle = _titleString.get(_selectedTemplatePosition);
+            final String templateTitle = _titleString.get(_selectedTemplatePosition);
 
-            SharedPreferences mPrefs = getSharedPreferences(TEMPLATE_FILE, MODE_PRIVATE);
-            SharedPreferences.Editor editor = mPrefs.edit();
+            // Create a confirmation dialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(MessageTemplateActivity.this);
+            builder.setTitle("Are you sure you want to delete the " + templateTitle + " template?");
 
-            // Remove the template associated with the title key
-            editor.remove(templateTitle);
-            editor.commit();
+            // Set up the buttons
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Get a reference to the shared preferences
+                    SharedPreferences mPrefs = getSharedPreferences(TEMPLATE_FILE, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = mPrefs.edit();
 
-            _titleString.remove(_selectedTemplatePosition);
-            _titlesAdapter.notifyDataSetChanged();
+                    // Remove the template associated with the title key
+                    editor.remove(templateTitle);
+                    editor.commit();
+
+                    // Update the ListView
+                    _titleString.remove(_selectedTemplatePosition);
+                    _titlesAdapter.notifyDataSetChanged();
+
+                    Context context = getApplicationContext();
+                    CharSequence text = "Template Deleted";
+                    int duration = Toast.LENGTH_SHORT;
+
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+                }
+            });
+
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+
+            builder.show();
         }
     }
 }
