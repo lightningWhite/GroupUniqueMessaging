@@ -124,4 +124,8 @@ public class MessageTemplateActivity extends AppCompatActivity {
             builder.show();
         }
     }
+
+    public void onViewSelectedTemplate(View view){
+
+    }
 }
