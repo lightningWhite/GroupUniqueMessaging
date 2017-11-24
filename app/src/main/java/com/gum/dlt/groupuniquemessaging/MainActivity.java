@@ -494,5 +494,17 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Template Saved", Toast.LENGTH_SHORT).show();
     }
 
+    public void onSendMessage(View view) {
 
+        // Loop through all of the contacts in the list and send each respective message to the messaging app
+        for (Contact contact: _contactList) {
+            String number = contact.getPhoneNumber();
+            Message message = contact.get_message();
+            String msgString = contact.get_constructedMessage();
+
+            Intent sendIntent = new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", number, null));
+            sendIntent.putExtra(Intent.EXTRA_TEXT, msgString);
+            startActivity(sendIntent);
+        }
+    }
 }
