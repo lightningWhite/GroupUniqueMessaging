@@ -1,9 +1,15 @@
 package com.gum.dlt.groupuniquemessaging;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -23,6 +29,9 @@ public class MessageTemplateActivity extends AppCompatActivity {
     List<String> _titleString;
 
     ArrayAdapter<String> _titlesAdapter;
+
+    // our selected title
+    private int _selectedTitlePosition;
 
 
 
@@ -53,6 +62,11 @@ public class MessageTemplateActivity extends AppCompatActivity {
         final ListView messageTemplates = (ListView) findViewById(R.id.messageTemplates);
         messageTemplates.setAdapter(_titlesAdapter);
 
+    }
+
+    public void onViewTemplates(View view){
 
     }
+
+
 }

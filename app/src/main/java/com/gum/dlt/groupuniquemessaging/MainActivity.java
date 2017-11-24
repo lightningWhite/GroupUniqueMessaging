@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         _varName = input.getText().toString();
 
-                        onClickOkVaribales();
+                       onClickOkVaribales();
                     }
                 })
 
