@@ -489,7 +489,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i(TAG, "The template message is: " + templateMessage);
 
-        prefsEditor.commit();
+        prefsEditor.apply();
 
         Toast.makeText(this, "Template Saved", Toast.LENGTH_SHORT).show();
     }
