@@ -206,4 +206,12 @@ public class MessageTemplateActivity extends AppCompatActivity {
             builder.show();
         }
     }
+
+    /**
+     * Uses the selected message from the message template list view, and puts it into the
+     * main activity edit message box.
+     */
+    public void onUseSelectedTemplate(View view) {
+        
+    }
 }
