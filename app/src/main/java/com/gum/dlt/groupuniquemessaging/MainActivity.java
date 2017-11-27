@@ -89,18 +89,25 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // This is when you load a saved template message.
+        final EditText editText = (EditText) findViewById(R.id.editMessage);
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            // Get the location of the EditText field and populate it with the message.
+            String message = bundle.getString(String.valueOf(R.string.loadTemplate));
+            editText.setText(message);
+        }
 
         // This makes it so the keyboard doesn't push up the buttons
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_CONTACTS},1);
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
         // Allocate a list for the template message's variable block names
         _templateVariableNames = new ArrayList<>();
-
 
         // Load the SharedPreferences file containing the contacts that were saved for activity switches
         SharedPreferences contactPref = this.getSharedPreferences(CONTACT_FILE, MODE_PRIVATE);

@@ -2,6 +2,7 @@ package com.gum.dlt.groupuniquemessaging;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.*;
 import android.support.v7.app.AlertDialog;
@@ -212,6 +213,15 @@ public class MessageTemplateActivity extends AppCompatActivity {
      * main activity edit message box.
      */
     public void onUseSelectedTemplate(View view) {
-        
+        if (_titleString != null && !_titleString.isEmpty()) {
+            Intent messageTemplate = new Intent(MessageTemplateActivity.this, MainActivity.class);
+            // Get the title for the key
+            final String templateTitle = _titleString.get(_selectedTemplatePosition);
+            // Get the String message from the title.
+            final String template = _savedTemplates.get(templateTitle);
+            // Put the message into the intent then start the activity.
+            messageTemplate.putExtra(String.valueOf(R.string.loadTemplate), template);
+            startActivity(messageTemplate);
+        }
     }
 }
