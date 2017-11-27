@@ -203,36 +203,39 @@ public class MainActivity extends AppCompatActivity {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
 
                 _selectedVarPosition = position;
+                String varName = _variablesList.get(_selectedVarPosition);
+                if (varName.equals("time") || varName.equals("Time")) {
+                    dialog.setTitle("Enter your variable.");
 
-                dialog.setTitle("Enter your variable.");
+                    // Set up the input
+                    final EditText input = new EditText(MainActivity.this);
 
-                // Set up the input
-                final EditText input = new EditText(MainActivity.this);
+                    // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                    input.setInputType(InputType.TYPE_CLASS_TEXT);
+                    dialog.setView(input);
 
-                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-                input.setInputType(InputType.TYPE_CLASS_TEXT);
-                dialog.setView(input);
+                    // Set up the Ok button.
+                    dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            _varName = input.getText().toString();
 
-                // Set up the Ok button.
-                dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        _varName = input.getText().toString();
+                            onClickOkVaribales();
+                        }
+                    })
 
-                       onClickOkVaribales();
-                    }
-                })
 
-                // Set up the Cancel button.
-                .setNegativeButton("Cancel ", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //Action for "Cancel".
-                    }
-                });
+                            // Set up the Cancel button.
+                            .setNegativeButton("Cancel ", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //Action for "Cancel".
+                                }
+                            });
 
-                final AlertDialog alert = dialog.create();
-                alert.show();
+                    final AlertDialog alert = dialog.create();
+                    alert.show();
+                }
             }
         });
     }
