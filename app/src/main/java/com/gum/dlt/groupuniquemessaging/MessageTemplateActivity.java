@@ -29,6 +29,7 @@ public class MessageTemplateActivity extends AppCompatActivity {
     // File to save templates
     final String TEMPLATE_FILE = "savedTemplates";
 
+    // holds the saved title and template
     Map<String, String> _savedTemplates;
 
     Set<String> _titleSet;
@@ -135,72 +136,28 @@ public class MessageTemplateActivity extends AppCompatActivity {
 
     public void onViewSelectedTemplate(View view){
 
-
+        // Allow access to the Shared Preferences to load the saved templates
         SharedPreferences mPrefs = getSharedPreferences(TEMPLATE_FILE, MODE_PRIVATE);
 
-//        final String TAG = "MessageTemplateActivity";
-//
-//        // File to save templates
-//        final String TEMPLATE_FILE = "savedTemplates";
-//
-//        Map<String, String> _savedTemplates;
-//
-//        Set<String> _titleSet;
-//
-//        List<String> _titleString;
-//
-//        ArrayAdapter<String> _titlesAdapter;
-
         if (_titleString != null && !_titleString.isEmpty()) {
+
             // Get the title for the key
             final String templateTitle = _titleString.get(_selectedTemplatePosition);
 
-            final String template = _savedTemplates.toString();
+            // Gets the titles message
+            final String template = _savedTemplates.get(templateTitle);
 
             // Create a confirmation dialog
             AlertDialog.Builder builder = new AlertDialog.Builder(MessageTemplateActivity.this);
             builder.setTitle(templateTitle);
 
-            String test = "this is a test";
-
-            // Set up the input
-            //final EditText input = new EditText(this);
-
             builder.setMessage(template);
-
-            //template[_selectedTemplatePosition] = input.getText().toString();
-
-            //_savedTemplates.toString();
 
             // Set up the buttons
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    // Get a reference to the shared preferences
-                    //SharedPreferences mPrefs = getSharedPreferences(TEMPLATE_FILE, MODE_PRIVATE);
-                    //SharedPreferences.Editor editor = mPrefs.edit();
 
-                    // Remove the template associated with the title key
-                    //editor.remove(templateTitle);
-                    //editor.commit();
-
-                    // Update the ListView
-                    //_titleString.remove(_selectedTemplatePosition);
-                    //_titlesAdapter.notifyDataSetChanged();
-
-                    //Context context = getApplicationContext();
-                    //CharSequence text = "Template Deleted";
-                    //int duration = Toast.LENGTH_SHORT;
-
-                    //Toast toast = Toast.makeText(context, text, duration);
-                    //toast.show();
-                }
-            });
-
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
                 }
             });
 
