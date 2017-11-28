@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Group Unique Messaging</string>
+    <string name="loadTemplate">loadTemplate</string>
 </resources>
