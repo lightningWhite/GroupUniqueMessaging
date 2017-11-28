@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -200,44 +201,142 @@ public class MainActivity extends AppCompatActivity {
 
         variableListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
 
                 _selectedVarPosition = position;
                 String varName = _variablesList.get(_selectedVarPosition);
                 if (varName.equals("time") || varName.equals("Time")) {
-                    dialog.setTitle("Enter your variable.");
-
-                    // Set up the input
-                    final EditText input = new EditText(MainActivity.this);
-
-                    // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-                    input.setInputType(InputType.TYPE_CLASS_TEXT);
-                    dialog.setView(input);
-
-                    // Set up the Ok button.
-                    dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                            _varName = input.getText().toString();
-
-                            onClickOkVaribales();
-                        }
-                    })
-
-
-                            // Set up the Cancel button.
-                            .setNegativeButton("Cancel ", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    //Action for "Cancel".
-                                }
-                            });
-
-                    final AlertDialog alert = dialog.create();
-                    alert.show();
+                    generateTimePopUp();
+                }
+                else if(varName.equals("day") || varName.equals("Day")){
+                    generateDayPopUp();
+                }
+                else {
+                    generateVarPopUp();
                 }
             }
         });
+    }
+
+    public void generateTimePopUp() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+        dialog.setTitle("Enter your variable.");
+
+        // Set up the input
+        final Spinner input = new Spinner(MainActivity.this);
+        ArrayAdapter<String> adapter;
+        List<String> list;
+
+        list = new ArrayList<String>();
+        list.add("1");
+        list.add("2");
+        list.add("3");
+        list.add("4");
+        list.add("5");
+        adapter = new ArrayAdapter<String>(getApplicationContext(),
+                android.R.layout.simple_spinner_item, list);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        input.setAdapter(adapter);
+        dialog.setView(input);
+
+        // Set up the Ok button.
+        dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                _varName = input.getSelectedItem().toString();
+
+                onClickOkVaribales();
+            }
+        })
+
+                // Set up the Cancel button.
+                .setNegativeButton("Cancel ", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Action for "Cancel".
+                    }
+                });
+
+        final AlertDialog alert = dialog.create();
+        alert.show();
+    }
+
+    public void generateDayPopUp() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+        dialog.setTitle("Enter your variable.");
+
+        // Set up the input
+        final Spinner input = new Spinner(MainActivity.this);
+        ArrayAdapter<String> adapter;
+        List<String> list;
+
+        list = new ArrayList<String>();
+        list.add("Sunday");
+        list.add("Monday");
+        list.add("Tuesday");
+        list.add("Wednesday");
+        list.add("Thursday");
+        list.add("Friday");
+        list.add("Saturday");
+        adapter = new ArrayAdapter<String>(getApplicationContext(),
+                android.R.layout.simple_spinner_item, list);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        input.setAdapter(adapter);
+        dialog.setView(input);
+
+        // Set up the Ok button.
+        dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                _varName = input.getSelectedItem().toString();
+
+                onClickOkVaribales();
+            }
+        })
+
+                // Set up the Cancel button.
+                .setNegativeButton("Cancel ", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Action for "Cancel".
+                    }
+                });
+
+        final AlertDialog alert = dialog.create();
+        alert.show();
+
+    }
+
+    public void generateVarPopUp() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+        dialog.setTitle("Enter your variable.");
+
+        // Set up the input
+        final EditText input = new EditText(MainActivity.this);
+
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        dialog.setView(input);
+
+        // Set up the Ok button.
+        dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                _varName = input.getText().toString();
+
+                onClickOkVaribales();
+            }
+        })
+
+                // Set up the Cancel button.
+                .setNegativeButton("Cancel ", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Action for "Cancel".
+                    }
+                });
+
+        final AlertDialog alert = dialog.create();
+        alert.show();
     }
 
     public void onClickOkVaribales() {
