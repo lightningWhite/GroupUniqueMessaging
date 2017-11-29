@@ -608,11 +608,11 @@ public class MainActivity extends AppCompatActivity {
         // Loop through all of the contacts in the list and send each respective message to the messaging app
         for (Contact contact: _contactList) {
             String number = contact.getPhoneNumber();
-            Message message = contact.get_message();
             String msgString = contact.get_constructedMessage();
 
-            Intent sendIntent = new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", number, null));
-            sendIntent.putExtra(Intent.EXTRA_TEXT, msgString);
+            Uri uri = Uri.parse("smsto:" + number);
+            Intent sendIntent = new Intent(Intent.ACTION_SENDTO, uri);
+            sendIntent.putExtra("sms_body", msgString);
             startActivity(sendIntent);
         }
     }
