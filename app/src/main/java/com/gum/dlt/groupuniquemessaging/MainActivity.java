@@ -573,7 +573,7 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
-    /*
+    /**
      *  This method takes the Template title and Template message and saves
      *      them using Shared Preferences
      */
@@ -603,6 +603,10 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Template Saved", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Serially loops through all of the contacts in the list and sends their message and
+     * phone number to the user-selected messaging app.
+     */
     public void onSendMessage(View view) {
 
         // Loop through all of the contacts in the list and send each respective message to the messaging app
