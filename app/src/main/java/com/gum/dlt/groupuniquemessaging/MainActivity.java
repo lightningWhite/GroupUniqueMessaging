@@ -218,31 +218,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void generateTimePopUp() {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+        setContentView(R.layout.time_alert_dialog);
+        TimeAlertDialog dialog = new TimeAlertDialog(MainActivity.this);
+        //AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
         dialog.setTitle("Enter your variable.");
 
         // Set up the input
-        final Spinner input = new Spinner(MainActivity.this);
-        ArrayAdapter<String> adapter;
-        List<String> list;
+        final EditText input = (EditText) findViewById(R.id.et_username);
 
-        list = new ArrayList<String>();
-        list.add("1");
-        list.add("2");
-        list.add("3");
-        list.add("4");
-        list.add("5");
-        adapter = new ArrayAdapter<String>(getApplicationContext(),
-                android.R.layout.simple_spinner_item, list);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        input.setAdapter(adapter);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
         dialog.setView(input);
+
+        // Set up the input
+//        final Spinner input = new Spinner(MainActivity.this);
+//        ArrayAdapter<String> adapter;
+//        List<String> list;
+//
+//        list = new ArrayList<String>();
+//        list.add("1");
+//        list.add("2");
+//        list.add("3");
+//        list.add("4");
+//        list.add("5");
+//        adapter = new ArrayAdapter<String>(getApplicationContext(),
+//                android.R.layout.simple_spinner_item, list);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        input.setAdapter(adapter);
+//        dialog.setView(input);
 
         // Set up the Ok button.
         dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
-                _varName = input.getSelectedItem().toString();
+//                _varName = input.getSelectedItem().toString();
 
                 onClickOkVaribales();
             }
@@ -256,8 +265,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        final AlertDialog alert = dialog.create();
-        alert.show();
+        //final AlertDialog alert = dialog.create();
+        dialog.show();
     }
 
     public void generateDayPopUp() {
