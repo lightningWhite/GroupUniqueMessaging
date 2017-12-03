@@ -2,17 +2,12 @@ package com.gum.dlt.groupuniquemessaging;
 
 /**
  * Created by Daniel on 11/13/2017.
+ * A class that provides functions to get the first name of a given contact.
  */
-
 public class ContactParser {
 
     private String _contactName;
     private String _firstName;
-
-//    ContactParser(Contact contact) {
-//        _contactName = contact;
-//    }
-
 
     public String get_contactName() {
         return _contactName;
@@ -22,11 +17,21 @@ public class ContactParser {
         this._contactName = _contactName;
     }
 
+    /**
+     * This method returns the first name of a passed contact name.
+     * @param fullContactName
+     * @return The first name of the given contact.
+     */
     public String getContactFirstName(String fullContactName) {
         _firstName = parse(fullContactName);
         return _firstName;
     }
 
+    /**
+     * This method returns the first word in a string.
+     * @param contactLabel
+     * @return A String containing the first word in the contact string.
+     */
     private String parse(String contactLabel) {
         String firstName = "";
 
