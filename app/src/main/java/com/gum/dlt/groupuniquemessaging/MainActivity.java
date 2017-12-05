@@ -1,6 +1,7 @@
 package com.gum.dlt.groupuniquemessaging;
 
 import android.Manifest;
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -218,6 +219,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void generateTimePopUp() {
+
+        // Create an instance of the dialog fragment and show it
+        DialogFragment newFragment = new TimeAlertDialog(getApplicationContext());
+        newFragment.show(getSupportFragmentManager(),"timePicker");
+
+
         setContentView(R.layout.time_alert_dialog);
         TimeAlertDialog dialog = new TimeAlertDialog(MainActivity.this);
         //AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
@@ -227,8 +234,8 @@ public class MainActivity extends AppCompatActivity {
         final EditText input = (EditText) findViewById(R.id.et_username);
 
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        dialog.setView(input);
+        //input.setInputType(InputType.TYPE_CLASS_TEXT);
+        //dialog.setView(input);
 
         // Set up the input
 //        final Spinner input = new Spinner(MainActivity.this);
@@ -265,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        //final AlertDialog alert = dialog.create();
+        final AlertDialog alert = dialog.create();
         dialog.show();
     }
 

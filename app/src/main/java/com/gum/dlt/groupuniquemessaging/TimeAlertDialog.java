@@ -19,7 +19,7 @@ public class TimeAlertDialog extends AlertDialog.Builder {
         mContext = context;
     }
 
-//    @SuppressLint("InflateParams")
+    @SuppressLint("InflateParams")
     @Override
     public AlertDialog show() {
         View view = LayoutInflater.from(mContext).inflate(R.layout.time_alert_dialog, null);
