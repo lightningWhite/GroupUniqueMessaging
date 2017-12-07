@@ -54,13 +54,12 @@ public class MainActivity extends AppCompatActivity {
 
     List<String> _variablesList;
 
-
-
     // An adapter to interact between the _contactList and the contactListVeiw.
     ContactsAdapter _contactsAdapter;
 
     //VariablesAdapter _variablesAdapter; // TODO: figure out why this can't find the R.id.variableName
     ArrayAdapter<String> _variablesAdapter;
+
     // contacts unique ID
     private String _contactID;
 
@@ -75,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
 
     // our selected variable
     private int _selectedVarPosition;
-
 
     /**
      * Respond to the Load Template Button.
@@ -133,12 +131,12 @@ public class MainActivity extends AppCompatActivity {
         _variablesList =  new ArrayList<>();
 
         // Create the contacts adapter so we can populate the variablesListView
-        //_variablesAdapter = new VariablesAdapter(this, android.R.layout.simple_selectable_list_item, _variablesList);
         _variablesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_selectable_list_item, _variablesList);
         final ListView variablesListView = (ListView) findViewById(R.id.variablesListView);
         variablesListView.setAdapter(_variablesAdapter);
 
-        // If there are contacts to load, populate the contact ListView with them (I don't think it ever goes here because of when we get the json)
+        // If there are contacts to load, populate the contact ListView with
+        //      them (I don't think it ever goes here because of when we get the json)
         if (_contactList != null && _contactList.isEmpty()) {
             // Add the list of contacts to the contactListView in an AsyncTask for threading
             ContactListViewTask addContact = new ContactListViewTask(_contactsAdapter, _contactList,
@@ -195,10 +193,7 @@ public class MainActivity extends AppCompatActivity {
         final ListView variableListView = (ListView) findViewById(R.id.variablesListView);
         variableListView.setAdapter(_variablesAdapter);
 
-        /**
-         * Listener for when a variable is selected to give the popup window for input.
-         */
-
+        //Listener for when a variable is selected to give the popup window for input.
         variableListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -354,7 +349,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MainActivity", json);
 
         prefsEditor.putString(CONTACT_KEY, json);
-        prefsEditor.commit();
+        prefsEditor.apply();
     }
 
     /**
@@ -412,7 +407,6 @@ public class MainActivity extends AppCompatActivity {
                 null, null, null);
 
         if (cursorID.moveToFirst()) {
-
             _contactID = cursorID.getString(cursorID.getColumnIndex(ContactsContract.Contacts._ID));
         }
 
@@ -532,16 +526,6 @@ public class MainActivity extends AppCompatActivity {
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
-// Code to try to get the spinner working in a pop up
-//        View myView;
-//        myView = getLayoutInflater().inflate(R.layout.activity_main, null);
-//        Spinner spinner = (Spinner) findViewById(R.id.planets_spinner);
-//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.planets_array, android.R.layout.simple_spinner_item);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        if (spinner != null)
-//            spinner.setAdapter(adapter);
-
-
         // Set up the buttons
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -593,6 +577,10 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Template Saved", Toast.LENGTH_SHORT).show();
     }
 
+    /*
+     * This method sends each unique message to each respective contact through the
+     *      users messaging app
+     **/
     public void onSendMessage(View view) {
 
         // Loop through all of the contacts in the list and send each respective message to the messaging app
