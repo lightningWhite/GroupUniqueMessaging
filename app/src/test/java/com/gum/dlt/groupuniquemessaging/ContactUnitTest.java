@@ -16,7 +16,7 @@ public class ContactUnitTest {
 
     /**
      * This test the get_firstName() method that parses the contact and
-     *      returns the first name.
+     * returns the first name.
      * @throws Exception
      */
     @Test
@@ -29,6 +29,10 @@ public class ContactUnitTest {
         assertEquals(expectedFirstName, actualFirstName);
     }
 
+    /**
+     * Checks for a odd or wierd input from user
+     * @throws Exception
+     */
     @Test
     public void test_getFirstName_crazy() throws Exception{
         String name = " John Doe";
@@ -42,6 +46,10 @@ public class ContactUnitTest {
         assertEquals(expectedFirstName, actualFirstName);
     }
 
+    /**
+     * Checks for a null while getting the first name from the contact
+     * @throws Exception
+     */
     @Test
     public void test_getFirstName_null() throws Exception{
         String name = null;
@@ -52,6 +60,10 @@ public class ContactUnitTest {
         assertEquals(expectedFirstName, actualFirstName);
     }
 
+    /**
+     * Test if the contact parser gets the first name
+     * @throws Exception
+     */
     @Test
     public void test_set_variable_block_names() throws Exception{
         String case1 = "Contact";
