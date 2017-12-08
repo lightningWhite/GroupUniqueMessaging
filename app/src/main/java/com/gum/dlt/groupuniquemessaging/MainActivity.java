@@ -32,6 +32,9 @@ import java.util.List;
 /**
  * The central hub of the Group Unique Messaging Application. This is where the user
  * inputs the template message, selects contacts, sets variables, and sends the messages.
+ * @author Tayler Baker
+ * @author Daniel Hornberger
+ * @author Logan Summers
  */
 public class MainActivity extends AppCompatActivity {
 
