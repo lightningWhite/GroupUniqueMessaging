@@ -480,7 +480,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void onRemoveContact(View btnSelectContact) {
         if (!_contactList.isEmpty()) {
-            if (_selectedContactPosition < _contactList.size()) {
+            if (_selectedContactPosition <= _contactList.size()) {
                 _contactList.remove(_contactList.remove(_selectedContactPosition));
                 _contactsAdapter.notifyDataSetChanged();
                 if (_contactList.isEmpty()) {
@@ -490,7 +490,9 @@ public class MainActivity extends AppCompatActivity {
             }
             if (_selectedContactPosition >= _contactList.size()) {
 //                ListView contactsList = (ListView) findViewById(R.id.contactListView);
-                _selectedContactPosition--;
+                if (_selectedContactPosition > 0){
+                    _selectedContactPosition--;
+                }
                 _variablesList.clear();
                 _variablesAdapter.notifyDataSetChanged();
 //                contactsList.setItemChecked(_selectedContactPosition, true);
