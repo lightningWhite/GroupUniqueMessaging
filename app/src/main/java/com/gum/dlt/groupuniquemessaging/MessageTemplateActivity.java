@@ -22,6 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Provides an interface for the user to see all saved templates, select and use one, and delele
+ * a selected template.
+ */
 public class MessageTemplateActivity extends AppCompatActivity {
 
     final String TAG = "MessageTemplateActivity";
@@ -32,14 +36,17 @@ public class MessageTemplateActivity extends AppCompatActivity {
     // holds the saved title and template
     Map<String, String> _savedTemplates;
 
+    // All of the titles contained in the SharedPreferences
     Set<String> _titleSet;
 
+    // The list of all the titles of the saved templates
     List<String> _titleString;
 
+    // The adapter for the Template ListView
     ArrayAdapter<String> _titlesAdapter;
 
+    // The position of the selected template
     int _selectedTemplatePosition = 0;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,17 +57,14 @@ public class MessageTemplateActivity extends AppCompatActivity {
 
         SharedPreferences mPrefs = getSharedPreferences(TEMPLATE_FILE, MODE_PRIVATE);
 
-        //TODO: Check to see if shared pref is empty
+        if (mPrefs != null) {
+            _savedTemplates = (Map<String, String>) mPrefs.getAll();
 
-        _savedTemplates = (Map<String, String>) mPrefs.getAll();
+            _titleString = new ArrayList<>();
 
-        _titleString = new ArrayList<>();
+            _titleSet = _savedTemplates.keySet();
 
-        _titleSet = _savedTemplates.keySet();
-
-        String array[] = _titleSet.toArray(new String[_titleSet.size()]);
-
-//        if(_titleString != null && !_titleString.isEmpty()){
+            String array[] = _titleSet.toArray(new String[_titleSet.size()]);
 
             for (int i = 0; i < array.length; i++) {
                 _titleString.add(array[i]);
@@ -78,11 +82,11 @@ public class MessageTemplateActivity extends AppCompatActivity {
                     Log.d(TAG, selectedFromList);
                 }
             });
-      //  }
-//        else{
-//            Toast toast = Toast.makeText(this, "EEROR: no templates saved", Toast.LENGTH_SHORT);
-//            toast.show();
-      //  }
+        }
+        else{
+            Toast toast = Toast.makeText(this, "No Saved Templates!", Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 
     /**
@@ -134,6 +138,10 @@ public class MessageTemplateActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Open a dialog that displays the content of the selected template.
+     * @param view
+     */
     public void onViewSelectedTemplate(View view){
 
         // Allow access to the Shared Preferences to load the saved templates
