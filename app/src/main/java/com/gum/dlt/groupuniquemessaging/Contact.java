@@ -12,10 +12,8 @@ import java.util.List;
  *      This class sets up all of the variables so that we can handle
  *      the contacts in the app.
  */
-
 public class Contact {
 
-    // Todo: It would probably be a good idea to use a factory for this Contact object
     private String _contactName;
     private String _phoneNumber;
     private Message _message;
@@ -38,6 +36,11 @@ public class Contact {
         _varBlocksAdded = false;
     }
 
+    /**
+     * Sets up the variables
+     * @param contactName
+     * @param phoneNumber
+     */
     public Contact(String contactName, String phoneNumber){
         super();
         _contactName = contactName;
@@ -64,6 +67,10 @@ public class Contact {
         this._phoneNumber = phoneNumber;
     }
 
+    /**
+     * Checks if there's a message and if there's not one create a new message
+     * @return the message
+     */
     public Message get_message() {
         if (_message == null) {
             _message = new Message();
@@ -83,6 +90,10 @@ public class Contact {
         return _variables;
     }
 
+    /**
+     * Parses the Contact and returns the first name
+     * @return the first name
+     */
     public String get_firstName() {
         //_parser.set_contactName(_contactName);
         Log.d("Contact", "THE CONTACT'S FULL NAME: " + get_contactName());
