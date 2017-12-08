@@ -472,9 +472,24 @@ public class MainActivity extends AppCompatActivity {
      */
     public void onRemoveContact(View btnSelectContact) {
         if (!_contactList.isEmpty()) {
-            int pos = _contactsAdapter.getSelectedItem();
-            _contactList.remove(_contactList.remove(pos));
-            _contactsAdapter.notifyDataSetChanged();
+            if (_selectedContactPosition < _contactList.size()) {
+                _contactList.remove(_contactList.remove(_selectedContactPosition));
+                _contactsAdapter.notifyDataSetChanged();
+                if (_contactList.isEmpty()) {
+                    _variablesList.clear();
+                    _variablesAdapter.notifyDataSetChanged();
+                }
+            }
+            if (_selectedContactPosition >= _contactList.size()) {
+//                ListView contactsList = (ListView) findViewById(R.id.contactListView);
+                _selectedContactPosition--;
+                _variablesList.clear();
+                _variablesAdapter.notifyDataSetChanged();
+//                contactsList.setItemChecked(_selectedContactPosition, true);
+//                contactsList.setSelection(_selectedContactPosition);
+//                _contactsAdapter.setSelectedItem(_selectedContactPosition);
+//                _contactsAdapter.notifyDataSetChanged();
+            }
         }
     }
 
