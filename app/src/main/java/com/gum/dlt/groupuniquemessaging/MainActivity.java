@@ -30,10 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
- *  The code that was used to retrieve contacts is modified code
- *      from: https://gist.github.com/evandrix/7058235
- *
+ * The central hub of the Group Unique Messaging Application. This is where the user
+ * inputs the template message, selects contacts, sets variables, and sends the messages.
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -52,14 +50,12 @@ public class MainActivity extends AppCompatActivity {
     // The generated variable block names stored here
     List<String> _templateVariableNames;
 
+    // Contains the variables from the selected contact to be displayed in the var ListView
     List<String> _variablesList;
-
-
 
     // An adapter to interact between the _contactList and the contactListVeiw.
     ContactsAdapter _contactsAdapter;
 
-    //VariablesAdapter _variablesAdapter; // TODO: figure out why this can't find the R.id.variableName
     ArrayAdapter<String> _variablesAdapter;
     // contacts unique ID
     private String _contactID;
@@ -75,15 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
     // our selected variable
     private int _selectedVarPosition;
-
-
-    /**
-     * Respond to the Load Template Button.
-     */
-    public void btnLoadTemplate (View view) {
-        Intent intent = new Intent(this, MessageTemplateActivity.class);
-        startActivity(intent);
-    }
 
     /**
      * Called when the activity is first created.
@@ -133,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
         _variablesList =  new ArrayList<>();
 
         // Create the contacts adapter so we can populate the variablesListView
-        //_variablesAdapter = new VariablesAdapter(this, android.R.layout.simple_selectable_list_item, _variablesList);
         _variablesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_selectable_list_item, _variablesList);
         final ListView variablesListView = (ListView) findViewById(R.id.variablesListView);
         variablesListView.setAdapter(_variablesAdapter);
@@ -147,9 +133,11 @@ public class MainActivity extends AppCompatActivity {
             Log.i(TAG, "Contacts added.");
         }
 
-        /* Listener for when a contact is selected to show the contact's variables.
-        * This is also used to add the message and generated variables to the contact if the
-        * selected contact was added after the generate variables button was clicked. */
+        /*
+         * Listener for when a contact is selected to show the contact's variables.
+         * This is also used to add the message and generated variables to the contact if the
+         * selected contact was added after the generate variables button was clicked.
+         * */
         contactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
                 Contact selectedFromList = (Contact) (contactListView.getItemAtPosition(myItemInt));
@@ -216,6 +204,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Generates a time selector popup with regular text input.
+     */
     public void generateTimePopUp() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
         dialog.setTitle("Enter a Time");
@@ -249,6 +240,9 @@ public class MainActivity extends AppCompatActivity {
         alert.show();
     }
 
+    /**
+     * Generates a day selector popup with a day drop-down menu.
+     */
     public void generateDayPopUp() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
         dialog.setTitle("Select a Day");
@@ -295,6 +289,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Generates a generic variable input popup with regular text input.
+     */
     public void generateVarPopUp() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
         String var = _variablesList.get(_selectedVarPosition);
@@ -408,6 +405,8 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This method obtains the phone number of the selected contact.
+     * The code that was used to retrieve contacts is modified code
+     * from: https://gist.github.com/evandrix/7058235
      * @return the contact's phone number
      */
     private String retrieveContactNumber() {
@@ -461,13 +460,12 @@ public class MainActivity extends AppCompatActivity {
         // querying contact data store
         Cursor cursor = getContentResolver().query(uriContact, null, null, null, null);
 
-        if (cursor.moveToFirst()) {
+        if (cursor != null && cursor.moveToFirst()) {
             // DISPLAY_NAME = The display name for the contact.
             // HAS_PHONE_NUMBER =   An indicator of whether this contact has at least one phone number.
             contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+            cursor.close();
         }
-
-        cursor.close();
 
         Log.d(TAG, "Contact Name: " + contactName);
 
@@ -476,7 +474,6 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This method makes it so the user can select a contact in the contactListView and remove it.
-     * @param btnSelectContact
      */
     public void onRemoveContact(View btnSelectContact) {
         if (!_contactList.isEmpty()) {
@@ -488,24 +485,22 @@ public class MainActivity extends AppCompatActivity {
                     _variablesAdapter.notifyDataSetChanged();
                 }
             }
+
+            // Check if the selected contact position is past the size of the list
             if (_selectedContactPosition >= _contactList.size()) {
-//                ListView contactsList = (ListView) findViewById(R.id.contactListView);
+                // Make sure we don't set the position negative
                 if (_selectedContactPosition > 0){
                     _selectedContactPosition--;
                 }
                 _variablesList.clear();
                 _variablesAdapter.notifyDataSetChanged();
-//                contactsList.setItemChecked(_selectedContactPosition, true);
-//                contactsList.setSelection(_selectedContactPosition);
-//                _contactsAdapter.setSelectedItem(_selectedContactPosition);
-//                _contactsAdapter.notifyDataSetChanged();
             }
         }
     }
 
     /**
-     * This method will get the names of the variable blocks and...
-     * @param view
+     * This method will get the names of the variable blocks and save them in a global list so
+     * they can be added to all the current and future contacts in the contact list.
      */
     public void onGenerateVariables(View view) {
 
@@ -557,16 +552,6 @@ public class MainActivity extends AppCompatActivity {
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
-// Code to try to get the spinner working in a pop up
-//        View myView;
-//        myView = getLayoutInflater().inflate(R.layout.activity_main, null);
-//        Spinner spinner = (Spinner) findViewById(R.id.planets_spinner);
-//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.planets_array, android.R.layout.simple_spinner_item);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        if (spinner != null)
-//            spinner.setAdapter(adapter);
-
-
         // Set up the buttons
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -616,6 +601,14 @@ public class MainActivity extends AppCompatActivity {
         prefsEditor.apply();
 
         Toast.makeText(this, "Template Saved", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Open the MessageTemplateActivity
+     */
+    public void btnLoadTemplate (View view) {
+        Intent intent = new Intent(this, MessageTemplateActivity.class);
+        startActivity(intent);
     }
 
     /**
