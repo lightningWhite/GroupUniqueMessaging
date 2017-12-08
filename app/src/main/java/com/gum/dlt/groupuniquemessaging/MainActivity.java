@@ -198,7 +198,6 @@ public class MainActivity extends AppCompatActivity {
         /**
          * Listener for when a variable is selected to give the popup window for input.
          */
-
         variableListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -219,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void generateTimePopUp() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-        dialog.setTitle("Select your time.");
+        dialog.setTitle("Enter a Time");
 
         // Set up the input
         final EditText input = new EditText(MainActivity.this);
@@ -234,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int id) {
                 _varName = input.getText().toString();
 
-                onClickOkVaribales();
+                onClickOkVariables();
             }
         })
 
@@ -252,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void generateDayPopUp() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-        dialog.setTitle("Select your day.");
+        dialog.setTitle("Select a Day");
 
         // Set up the input
         final Spinner input = new Spinner(MainActivity.this);
@@ -279,12 +278,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int id) {
                 _varName = input.getSelectedItem().toString();
 
-                onClickOkVaribales();
+                onClickOkVariables();
             }
         })
 
                 // Set up the Cancel button.
-                .setNegativeButton("Cancel ", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //Action for "Cancel".
@@ -298,7 +297,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void generateVarPopUp() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-        dialog.setTitle("Select your day");
+        String var = _variablesList.get(_selectedVarPosition);
+        dialog.setTitle("Enter a Value for" + " " + var);
 
         // Set up the input
         final EditText input = new EditText(MainActivity.this);
@@ -313,7 +313,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int id) {
                 _varName = input.getText().toString();
 
-                onClickOkVaribales();
+                // If the user enters an empty string for a var, replace it with the original var
+                if (_varName.isEmpty()) {
+                    _varName = _templateVariableNames.get(_selectedVarPosition);
+                }
+
+                onClickOkVariables();
             }
         })
 
@@ -329,7 +334,10 @@ public class MainActivity extends AppCompatActivity {
         alert.show();
     }
 
-    public void onClickOkVaribales() {
+    /**
+     * Sets the selected contact's variable to the user's input.
+     */
+    public void onClickOkVariables() {
         _contactList.get(_selectedContactPosition).set_variableAtIndex(_varName, _selectedVarPosition);
         _variablesList.clear();
         _variablesList.addAll(_contactList.get(_selectedContactPosition).get_variables());
