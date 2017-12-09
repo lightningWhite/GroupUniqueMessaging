@@ -1,6 +1,8 @@
 package com.gum.dlt.groupuniquemessaging;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,6 +18,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -205,6 +208,24 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // Listener for when focus changes from the EditText view in order to hide the keyboard
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+//        Context context = getApplicationContext();
+//
+//        InputMethodManager inputManager =
+//                (InputMethodManager) context.
+//                        getSystemService(Context.INPUT_METHOD_SERVICE);
+//        inputManager.hideSoftInputFromWindow(
+//                editText.getWindowToken(),
+//                InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     /**
@@ -507,6 +528,12 @@ public class MainActivity extends AppCompatActivity {
      */
     public void onGenerateVariables(View view) {
 
+        // Hide the keyboard when this button is clicked
+        EditText editText = (EditText) findViewById(R.id.editMessage);
+        if (editText.hasFocus()) {
+            editText.clearFocus();
+        }
+
         // Get the template from the textBox
         EditText textBox = (EditText) findViewById(R.id.editMessage);
         Editable template = textBox.getText();
@@ -630,5 +657,15 @@ public class MainActivity extends AppCompatActivity {
             sendIntent.putExtra("sms_body", msgString);
             startActivity(sendIntent);
         }
+    }
+
+
+    /**
+     * Hides the keyboard when the focus changes from the edit text view.
+     * @param view
+     */
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }
