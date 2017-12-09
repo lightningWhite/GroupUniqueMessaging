@@ -187,6 +187,8 @@ public class MessageTemplateActivity extends AppCompatActivity {
             // Put the message into the intent then start the activity.
             messageTemplate.putExtra(String.valueOf(R.string.loadTemplate), template);
             startActivity(messageTemplate);
+
+            Toast.makeText(this, "Template Loaded", Toast.LENGTH_SHORT).show();
         }
     }
 }
