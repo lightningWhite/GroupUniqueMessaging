@@ -335,10 +335,16 @@ public class MainActivity extends AppCompatActivity {
                 _varName = input.getText().toString();
 
                 // If the user enters an empty string for a var, replace it with the original var
-                if (_varName.isEmpty()) {
-                    _varName = _templateVariableNames.get(_selectedVarPosition);
-                }
+                if (_varName.isEmpty()){
+                    if(!(_templateVariableNames.get(_selectedVarPosition).equals("contact")
+                        || _templateVariableNames.get(_selectedVarPosition).equals("Contact"))) {
+                        _varName = _templateVariableNames.get(_selectedVarPosition);
+                    }
 
+                    else{
+                        _varName = _variablesList.get(_selectedVarPosition);
+                    }
+                }
                 onClickOkVariables();
             }
         })
