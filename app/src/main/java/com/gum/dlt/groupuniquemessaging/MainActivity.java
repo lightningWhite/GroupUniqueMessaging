@@ -2,7 +2,6 @@ package com.gum.dlt.groupuniquemessaging;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     List<Contact> _contactList;
 
     // The generated variable block names stored here
-    List<String> _templateVariableNames;
+    List<String> _generatedTemplateVarNames;
 
     // Contains the variables from the selected contact to be displayed in the var ListView
     List<String> _variablesList;
@@ -101,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_CONTACTS},1);
 
         // Allocate a list for the template message's variable block names
-        _templateVariableNames = new ArrayList<>();
+        _generatedTemplateVarNames = new ArrayList<>();
 
         // Load the SharedPreferences file containing the contacts that were saved for activity switches
         SharedPreferences contactPref = this.getSharedPreferences(CONTACT_FILE, MODE_PRIVATE);
@@ -140,9 +139,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         /*
-         * Listener for when a contact is selected to show the contact's variables.
-         * This is also used to add the message and generated variables to the contact if the
-         * selected contact was added after the generate variables button was clicked.
+         * Listener for when a contact is selected to show the contact's variables. It sets
+         * the _selectedContactPosition and displays the selected contact's variables in the
+         * variables listView.
          * */
         contactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
@@ -150,29 +149,9 @@ public class MainActivity extends AppCompatActivity {
                 _selectedContactPosition = myItemInt;
                 Log.d("MainActivity", selectedFromList.get_contactName());
 
-                // Set the added contact's variables and message if the message exists and vars are generated and the blocks haven't been set already
-                if(_templateVariableNames != null && (!_templateVariableNames.isEmpty()) && (!_contactList.get(myItemInt).get_varBlocksAdded())) {
-                    // Get the last contact in the list since it is the most recently added contact and set its variables
-                    _contactList.get(myItemInt).set_variable_block_names(_templateVariableNames);
-
-                    // Get the template from the textBox
-                    EditText textBox = (EditText) findViewById(R.id.editMessage);
-                    Editable template = textBox.getText();
-                    String templateString = template.toString();
-
-                    // Create a message object to insert into the contact
-                    Message message = new Message();
-                    message.set_msg_template(templateString);
-
-                    // Log the contact's variable blocks that were added to the contact
-                    List<String> tempContactVars;
-                    tempContactVars = _contactList.get(myItemInt).get_variables();
-                    if (tempContactVars != null) {
-                        for (String var : tempContactVars) {
-                            Log.d(TAG, "This is the variable block added to the contact: " + var);
-                        }
-                    }
-                }
+                // A hack for changing the contact listView highlighting from transparent to grey
+                // after deleting the last item in the list
+                contactListView.setSelector(android.R.color.darker_gray);
 
                 Log.d(TAG, "ABOUT TO REASSIGN THE VARIABLES!!!");
                 _variablesAdapter.clear();
@@ -328,9 +307,9 @@ public class MainActivity extends AppCompatActivity {
 
                 // If the user enters an empty string for a var, replace it with the original var
                 if (_varName.isEmpty()){
-                    if(!(_templateVariableNames.get(_selectedVarPosition).equals("contact")
-                        || _templateVariableNames.get(_selectedVarPosition).equals("Contact"))) {
-                        _varName = _templateVariableNames.get(_selectedVarPosition);
+                    if(!(_generatedTemplateVarNames.get(_selectedVarPosition).equals("contact")
+                        || _generatedTemplateVarNames.get(_selectedVarPosition).equals("Contact"))) {
+                        _varName = _generatedTemplateVarNames.get(_selectedVarPosition);
                     }
 
                     else{
@@ -416,9 +395,21 @@ public class MainActivity extends AppCompatActivity {
             String name = retrieveContactName();
             String number = retrieveContactNumber();
 
+            // Set the new contact's name and numbers
             contact = new Contact();
             contact.set_contactName(name);
             contact.setPhoneNumber(number);
+
+            // Set the contact's message to the current message in the EditMessage box
+            EditText editText = (EditText) findViewById(R.id.editMessage);
+            Editable editable = editText.getText();
+            String templateString = editable.toString();
+
+            // Set the contact's variables to the previously generated variables, if any
+            Message message = new Message();
+            message.set_msg_template(templateString);
+            contact.set_message(message);
+            contact.set_variable_block_names(_generatedTemplateVarNames);
         }
 
         // Add the contact to the ListView
@@ -511,12 +502,15 @@ public class MainActivity extends AppCompatActivity {
             // Check if the selected contact position is past the size of the list
             if (_selectedContactPosition >= _contactList.size()) {
                 // Make sure we don't set the position negative
-                if (_selectedContactPosition > 0){
-                    _selectedContactPosition--;
-                }
+                _selectedContactPosition--;
                 _variablesList.clear();
                 _variablesAdapter.notifyDataSetChanged();
+
+                // A hack for unselecting the empty space where the deleted contact was
+                ListView contactListView = (ListView) findViewById(R.id.contactListView);
+                contactListView.setSelector(android.R.color.transparent);
             }
+
         }
     }
 
@@ -542,9 +536,9 @@ public class MainActivity extends AppCompatActivity {
         Message message = new Message();
         Log.d(TAG, "About to set the message template in the message object...");
         message.set_msg_template(templateString);
-        _templateVariableNames = message.get_variable_names_from_template();
+        _generatedTemplateVarNames = message.get_variable_names_from_template();
 
-        for (String variable: _templateVariableNames) {
+        for (String variable: _generatedTemplateVarNames) {
             Log.d(TAG, "Parsed Variable: " + variable);
         }
 
@@ -558,7 +552,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Make sure we don't overwrite any potentially set contact variable values
                 Log.d(TAG, "About to set the variable block names of the contact...");
-                contact.set_variable_block_names(_templateVariableNames);
+                contact.set_variable_block_names(_generatedTemplateVarNames);
             }
         }
     }
@@ -656,7 +650,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(sendIntent);
         }
     }
-
 
     /**
      * Hides the keyboard when the focus changes from the edit text view.
