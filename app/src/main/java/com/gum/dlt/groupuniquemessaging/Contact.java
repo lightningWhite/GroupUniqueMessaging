@@ -17,7 +17,7 @@ public class Contact {
     private String _contactName;
     private String _phoneNumber;
     private Message _message;
-    private String _constructeMessage;
+    private String _constructedMessage;
     private ContactParser _parser;
     private List<String> _variables;
     private boolean _varBlocksAdded;
@@ -29,7 +29,7 @@ public class Contact {
         _contactName = "";
         _phoneNumber = "";
         _message = new Message();
-        _constructeMessage = "";
+        _constructedMessage = "";
         _parser = new ContactParser();
         _parser.set_contactName(get_contactName());
         _variables = new ArrayList<>();
@@ -153,7 +153,7 @@ public class Contact {
     }
 
     public String get_constructedMessage() {
-        _constructeMessage = _message.get_msg_with_set_variables(_variables);
-        return _constructeMessage;
+        _constructedMessage = _message.get_msg_with_set_variables(_variables);
+        return _constructedMessage;
     }
 }
