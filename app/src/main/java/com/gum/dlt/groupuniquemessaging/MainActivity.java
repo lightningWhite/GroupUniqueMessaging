@@ -490,6 +490,10 @@ public class MainActivity extends AppCompatActivity {
      */
     public void onRemoveContact(View btnSelectContact) {
         if (!_contactList.isEmpty()) {
+            // Make sure we don't try to delete at a negative index
+            if(_selectedContactPosition < 0) {
+                _selectedContactPosition = _contactList.size() - 1;
+            }
             if (_selectedContactPosition <= _contactList.size()) {
                 _contactList.remove(_contactList.remove(_selectedContactPosition));
                 _contactsAdapter.notifyDataSetChanged();
@@ -510,7 +514,6 @@ public class MainActivity extends AppCompatActivity {
                 ListView contactListView = (ListView) findViewById(R.id.contactListView);
                 contactListView.setSelector(android.R.color.transparent);
             }
-
         }
     }
 
