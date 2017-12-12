@@ -79,6 +79,8 @@ public class MessageTemplateActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
                     String selectedFromList = (String) (messageTemplates.getItemAtPosition(myItemInt));
                     _selectedTemplatePosition = myItemInt;
+                    ListView templateListView = (ListView) findViewById(R.id.messageTemplates);
+                    templateListView.setSelector(android.R.color.darker_gray);
                     Log.d(TAG, selectedFromList);
                 }
             });
@@ -114,9 +116,23 @@ public class MessageTemplateActivity extends AppCompatActivity {
                     editor.remove(templateTitle);
                     editor.commit();
 
-                    // Update the ListView
-                    _titleString.remove(_selectedTemplatePosition);
-                    _titlesAdapter.notifyDataSetChanged();
+                    if (!_titleString.isEmpty()) {
+                        if (_selectedTemplatePosition <= _titleString.size()) {
+                            _titleString.remove(_titleString.remove(_selectedTemplatePosition));
+                            _titlesAdapter.notifyDataSetChanged();
+                        }
+
+                        // Check if the selected contact position is past the size of the list
+                        if (_selectedTemplatePosition >= _titleString.size()) {
+                            // Make sure we don't set the position negative
+                            _selectedTemplatePosition--;
+                            _titlesAdapter.notifyDataSetChanged();
+
+                            // A hack for unselecting the empty space where the deleted contact was
+                            ListView templatesListView = (ListView) findViewById(R.id.messageTemplates);
+                            templatesListView.setSelector(android.R.color.transparent);
+                        }
+                    }
 
                     Context context = getApplicationContext();
                     CharSequence text = "Template Deleted";
