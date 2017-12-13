@@ -97,6 +97,7 @@ public class MessageTemplateActivity extends AppCompatActivity {
     public void onDeleteTemplate(View view) {
 
         if (_titleString != null && !_titleString.isEmpty()) {
+
             // Get the title for the key
             final String templateTitle = _titleString.get(_selectedTemplatePosition);
 
@@ -117,6 +118,12 @@ public class MessageTemplateActivity extends AppCompatActivity {
                     editor.commit();
 
                     if (!_titleString.isEmpty()) {
+                        // Never delete at a negative index
+                        if(_selectedTemplatePosition < 0) {
+                            _selectedTemplatePosition = _titleString.size() - 1;
+                        }
+
+                        // Normal remove
                         if (_selectedTemplatePosition <= _titleString.size()) {
                             _titleString.remove(_titleString.remove(_selectedTemplatePosition));
                             _titlesAdapter.notifyDataSetChanged();
